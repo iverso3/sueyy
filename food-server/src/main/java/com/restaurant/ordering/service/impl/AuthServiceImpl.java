@@ -126,7 +126,7 @@ public class AuthServiceImpl implements AuthService {
     private User createNewUser(String openid) {
         User user = new User();
         user.setOpenid(openid);
-        user.setNickname("微信用户_" + openid.substring(0, 8));
+        user.setNickname("微信用户_" + (openid.length() >= 8 ? openid.substring(0, 8) : openid));
         user.setRole(UserRole.USER);
         user.setAvatarUrl("https://example.com/default-avatar.png");
         return userRepository.save(user);

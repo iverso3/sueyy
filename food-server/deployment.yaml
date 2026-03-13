@@ -19,14 +19,14 @@ spec:
     spec:
       containers:
         - name: restaurant-ordering
-          image: iverso3/sueyy-food-server:latest
+          image: suyeenn/sueyy-food-server:latest
           ports:
             - containerPort: 8080
           env:
             - name: SPRING_PROFILES_ACTIVE
               value: "prod"
             - name: DB_HOST
-              value: "mysql-service"
+              value: "suyye-db-mysql.ns-wxnvuned.svc"
             - name: DB_PORT
               value: "3306"
             - name: DB_NAME
@@ -36,7 +36,7 @@ spec:
             - name: DB_PASSWORD
               value: "your_db_password"
             - name: REDIS_HOST
-              value: "redis-service"
+              value: "suyye-redis-redis.ns-wxnvuned.svc"
             - name: REDIS_PORT
               value: "6379"
             - name: REDIS_PASSWORD
@@ -80,21 +80,15 @@ spec:
       targetPort: 8080
   type: ClusterIP
 ---
-apiVersion: v1
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: restaurant-ordering-ingress
   annotations:
     kubernetes.io/ingress.class: nginx
-    cert-manager.io/cluster-issuer: letsencrypt-prod
 spec:
-  tls:
-    - hosts:
-        - api.your-domain.com
-      secretName: restaurant-ordering-tls
   rules:
-    - host: api.your-domain.com
-      http:
+    - http:
         paths:
           - path: /
             pathType: Prefix

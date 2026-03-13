@@ -6,7 +6,7 @@ App({
     userId: null, // 用户ID
     token: null,
     tokenExpireTime: null, // token过期时间
-    apiBaseUrl: 'http://localhost:8080/api', // TODO: 部署到Sealos后改为: https://你的域名/api
+    apiBaseUrl: 'https://qmihmahoouke.cloud.sealos.io/api',
     // 本地测试时可使用模拟数据
     useMockData: false
   },
