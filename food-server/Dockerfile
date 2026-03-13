@@ -1,7 +1,10 @@
 # 构建阶段
-FROM registry.cn-hangzhou.aliyuncs.com/library/maven:3.9-eclipse-temurin-17 AS builder
+FROM maven:3.9-eclipse-temurin-17 AS builder
 
 WORKDIR /app
+
+# 配置Maven阿里云仓库
+RUN sed -i 's|https://repo.maven.apache.org/maven2|https://maven.aliyun.com/repository/central|g' /usr/share/maven/conf/settings.xml || true
 
 # 复制 pom.xml 并下载依赖
 COPY pom.xml .
@@ -12,7 +15,7 @@ COPY src ./src
 RUN mvn clean package -DskipTests -B
 
 # 运行阶段
-FROM registry.cn-hangzhou.aliyuncs.com/library/eclipse-temurin:17-jre-alpine
+FROM eclipse-temurin:17-jre-alpine
 
 WORKDIR /app
 
