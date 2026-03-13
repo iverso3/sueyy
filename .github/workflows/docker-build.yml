@@ -27,6 +27,6 @@ jobs:
         with:
           context: ./food-server
           push: true
-          tags: iverso3/sueyy-food-server:latest
+          tags: suyeenn/sueyy-food-server:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
