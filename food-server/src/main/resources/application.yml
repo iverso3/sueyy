@@ -76,8 +76,8 @@ jwt:
 
 wechat:
   miniapp:
-    app-id: ${WECHAT_APP_ID:your-app-id}
-    secret: ${WECHAT_APP_SECRET:your-app-secret}
+    app-id: ${WECHAT_APP_ID:wxba5a6b871bc045bc}
+    secret: ${WECHAT_APP_SECRET:b563640ca8daebbe15aa6bf8390bcbb0}
     mch-id: ${WECHAT_MCH_ID:your-mch-id}
     mch-key: ${WECHAT_MCH_KEY:your-mch-key}
     key-path: ${WECHAT_KEY_PATH:classpath:cert/apiclient_cert.p12}

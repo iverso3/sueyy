@@ -19,3 +19,8 @@ logging:
     com.restaurant.ordering: DEBUG
     org.hibernate.SQL: DEBUG
     org.hibernate.type: TRACE
+
+wechat:
+  miniapp:
+    app-id: wxba5a6b871bc045bc
+    secret: b563640ca8daebbe15aa6bf8390bcbb0

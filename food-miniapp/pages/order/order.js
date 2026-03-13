@@ -41,11 +41,15 @@ Page({
     }).then(response => {
       if (response.code === 200 && response.data) {
         // 处理订单数据，添加statusText字段
-        const orders = (response.data.content || response.data).map(order => ({
-          ...order,
-          statusText: this.getStatusText(order.status),
-          itemsText: this.getItemsText(order.items)
-        }));
+        const orders = (response.data.content || response.data).map(order => {
+          const itemsInfo = this.getItemsText(order.items);
+          return {
+            ...order,
+            statusText: this.getStatusText(order.status),
+            itemsText: itemsInfo.text,
+            itemList: itemsInfo.list
+          };
+        });
         // 按日期分组
         const groupedOrders = this.groupOrdersByDate(orders);
         this.setData({
@@ -81,9 +85,10 @@ Page({
    * 获取商品文本
    */
   getItemsText(items) {
-    if (!items || items.length === 0) return '暂无商品';
-    if (items.length === 1) return items[0].name;
-    return `${items[0].name} 等${items.length}件商品`;
+    if (!items || items.length === 0) return { text: '暂无商品', list: [] };
+    const itemNames = items.map(item => item.menuItemName || item.name || item.dishName || '菜品');
+    if (itemNames.length === 1) return { text: itemNames[0], list: itemNames };
+    return { text: `${itemNames[0]} 等${itemNames.length}件商品`, list: itemNames };
   },
 
   /**

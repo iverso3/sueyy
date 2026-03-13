@@ -140,6 +140,21 @@
   color: #4B5563;
 }
 
+.items-list {
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: 12rpx;
+  gap: 12rpx;
+}
+
+.dish-tag {
+  font-size: 24rpx;
+  color: #6B7280;
+  background-color: #F3F4F6;
+  padding: 6rpx 16rpx;
+  border-radius: 8rpx;
+}
+
 .order-price {
   flex-shrink: 0;
 }

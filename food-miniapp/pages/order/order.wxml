@@ -34,6 +34,9 @@
               <view class="order-content">
                 <view class="items-info">
                   <text class="items-name">{{item.itemsText}}</text>
+                  <view class="items-list" wx:if="{{item.itemList && item.itemList.length > 0}}">
+                    <text wx:for="{{item.itemList}}" wx:key="index" wx:for-item="dishName" class="dish-tag">{{dishName}}</text>
+                  </view>
                 </view>
                 <view class="order-price">
                   <text class="price-value">¥{{item.actualAmount}}</text>
