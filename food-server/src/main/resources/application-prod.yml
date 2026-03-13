@@ -45,3 +45,8 @@ management:
   endpoint:
     health:
       show-details: when-authorized
+
+wechat:
+  miniapp:
+    app-id: ${WECHAT_APP_ID:wxba5a6b871bc045bc}
+    secret: ${WECHAT_APP_SECRET:b563640ca8daebbe15aa6bf8390bcbb0}
