@@ -1,0 +1,105 @@
+# Sealos 部署配置 - 餐厅点餐系统后端
+# 使用方法: sealos run docker.io/iverso3/sueyy-food-server:latest
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: restaurant-ordering
+  labels:
+    app: restaurant-ordering
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: restaurant-ordering
+  template:
+    metadata:
+      labels:
+        app: restaurant-ordering
+    spec:
+      containers:
+        - name: restaurant-ordering
+          image: iverso3/sueyy-food-server:latest
+          ports:
+            - containerPort: 8080
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: "prod"
+            - name: DB_HOST
+              value: "mysql-service"
+            - name: DB_PORT
+              value: "3306"
+            - name: DB_NAME
+              value: "restaurant_db"
+            - name: DB_USERNAME
+              value: "restaurant_user"
+            - name: DB_PASSWORD
+              value: "your_db_password"
+            - name: REDIS_HOST
+              value: "redis-service"
+            - name: REDIS_PORT
+              value: "6379"
+            - name: REDIS_PASSWORD
+              value: "your_redis_password"
+            - name: JWT_SECRET
+              value: "your_jwt_secret_key"
+            - name: WECHAT_APPID
+              value: "your_wechat_appid"
+            - name: WECHAT_SECRET
+              value: "your_wechat_secret"
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "100m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
+          livenessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8080
+            initialDelaySeconds: 60
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8080
+            initialDelaySeconds: 30
+            periodSeconds: 5
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: restaurant-ordering-service
+spec:
+  selector:
+    app: restaurant-ordering
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080
+  type: ClusterIP
+---
+apiVersion: v1
+kind: Ingress
+metadata:
+  name: restaurant-ordering-ingress
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+spec:
+  tls:
+    - hosts:
+        - api.your-domain.com
+      secretName: restaurant-ordering-tls
+  rules:
+    - host: api.your-domain.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: restaurant-ordering-service
+                port:
+                  number: 80
