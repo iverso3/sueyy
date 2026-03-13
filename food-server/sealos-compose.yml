@@ -1,0 +1,82 @@
+version: '3.8'
+
+services:
+  # MySQL 数据库
+  mysql:
+    image: mysql:8.0
+    container_name: restaurant-mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-root123456}
+      MYSQL_DATABASE: restaurant_db
+      MYSQL_USER: restaurant_user
+      MYSQL_PASSWORD: ${DB_PASSWORD:-restaurant_password}
+      TZ: Asia/Shanghai
+    volumes:
+      - mysql-data:/var/lib/mysql
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "3306:3306"
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - restaurant-network
+
+  # Redis 缓存
+  redis:
+    image: redis:7-alpine
+    container_name: restaurant-redis
+    restart: always
+    command: redis-server --appendonly yes
+    volumes:
+      - redis-data:/data
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - restaurant-network
+
+  # Java 后端应用
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: restaurant-backend
+    restart: always
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_NAME: restaurant_db
+      DB_USERNAME: restaurant_user
+      DB_PASSWORD: ${DB_PASSWORD:-restaurant_password}
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      REDIS_PASSWORD: ${REDIS_PASSWORD:-}
+      WECHAT_APP_ID: ${WECHAT_APP_ID:-your-app-id}
+      WECHAT_APP_SECRET: ${WECHAT_APP_SECRET:-your-app-secret}
+      JWT_SECRET: ${JWT_SECRET:-your-jwt-secret-key}
+    ports:
+      - "8080:8080"
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - restaurant-network
+
+volumes:
+  mysql-data:
+  redis-data:
+
+networks:
+  restaurant-network:
+    driver: bridge

@@ -1,0 +1,96 @@
+<!--pages/dish-edit/dish-edit.wxml-->
+<view class="container">
+  <form class="form" bindsubmit="onSubmit">
+    <!-- 菜品图片 -->
+    <view class="form-section">
+      <view class="section-title">菜品图片</view>
+      <view class="image-upload" bindtap="onChooseImage">
+        <image wx:if="{{tempFilePath || imageUrl}}" src="{{tempFilePath || imageUrl}}" mode="aspectFill" class="preview-image" />
+        <view wx:else class="upload-placeholder">
+          <text class="icon">+</text>
+          <text>点击上传图片</text>
+        </view>
+      </view>
+      <view class="image-actions" wx:if="{{tempFilePath || imageUrl}}">
+        <view class="image-action-btn" bindtap="previewImage">预览</view>
+        <view class="image-action-btn remove" bindtap="removeImage">删除</view>
+      </view>
+    </view>
+
+    <!-- 菜品名称 -->
+    <view class="form-section">
+      <view class="section-title">菜品名称 <text class="required">*</text></view>
+      <input class="input" placeholder="请输入菜品名称" value="{{name}}" data-field="name" bindinput="onInput" maxlength="100" />
+    </view>
+
+    <!-- 分类 -->
+    <view class="form-section">
+      <view class="section-title">分类 <text class="required">*</text></view>
+      <picker mode="selector" range="{{categories}}" range-key="name" value="{{categoryIndex}}" bindchange="onCategoryChange">
+        <view class="picker">
+          <text>{{categories[categoryIndex] ? categories[categoryIndex].name : '请选择分类'}}</text>
+          <text class="arrow">></text>
+        </view>
+      </picker>
+    </view>
+
+    <!-- 价格 -->
+    <view class="form-section">
+      <view class="section-title">价格 <text class="required">*</text></view>
+      <view class="price-input-wrap">
+        <text class="currency">¥</text>
+        <input class="input price-input" type="digit" placeholder="0.00" value="{{price}}" data-field="price" bindinput="onInput" />
+      </view>
+    </view>
+
+    <!-- 原价 -->
+    <view class="form-section">
+      <view class="section-title">原价（用于显示折扣）</view>
+      <view class="price-input-wrap">
+        <text class="currency">¥</text>
+        <input class="input price-input" type="digit" placeholder="0.00" value="{{originalPrice}}" data-field="originalPrice" bindinput="onInput" />
+      </view>
+    </view>
+
+    <!-- 库存 -->
+    <view class="form-section">
+      <view class="section-title">库存（-1表示无限）</view>
+      <input class="input" type="number" placeholder="-1表示无限库存" value="{{stock}}" data-field="stock" bindinput="onInput" />
+    </view>
+
+    <!-- 菜品描述 -->
+    <view class="form-section">
+      <view class="section-title">菜品描述</view>
+      <textarea class="textarea" placeholder="请输入菜品描述" value="{{description}}" data-field="description" bindinput="onInput" maxlength="1000" auto-height />
+    </view>
+
+    <!-- 排序 -->
+    <view class="form-section">
+      <view class="section-title">排序（越小越靠前）</view>
+      <input class="input" type="number" placeholder="0" value="{{sortOrder}}" data-field="sortOrder" bindinput="onInput" />
+    </view>
+
+    <!-- 开关选项 -->
+    <view class="form-section switches">
+      <view class="switch-item">
+        <text class="switch-label">是否推荐</text>
+        <switch checked="{{isRecommended}}" data-field="isRecommended" bindchange="onSwitchChange" color="#4caf50" />
+      </view>
+      <view class="switch-item">
+        <text class="switch-label">是否热销</text>
+        <switch checked="{{isHot}}" data-field="isHot" bindchange="onSwitchChange" color="#4caf50" />
+      </view>
+      <view class="switch-item">
+        <text class="switch-label">是否在售</text>
+        <switch checked="{{isActive}}" data-field="isActive" bindchange="onSwitchChange" color="#4caf50" />
+      </view>
+    </view>
+
+    <!-- 提交按钮 -->
+    <view class="submit-btn-wrap">
+      <button class="submit-btn" form-type="submit" loading="{{submitting}}">
+        {{submitting ? '提交中...' : (type === 'add' ? '创建菜品' : '保存修改')}}
+      </button>
+    </view>
+  </form>
+</view>

@@ -1,0 +1,45 @@
+# Java
+target/
+*.class
+*.jar
+*.war
+*.log
+*.iml
+.idea/
+
+# Maven
+.mvn/
+mvnw
+mvnw.cmd
+
+# Node
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# WeChat Mini Program
+miniprogram_npm/
+project.config.json
+sitemap.json
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.bmp
+*.webp
+*.ico
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+logs/
+*.log
+
+# Uploads
+uploads/
+
+# Local config
+.env
+.env.local

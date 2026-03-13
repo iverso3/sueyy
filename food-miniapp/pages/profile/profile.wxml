@@ -1,0 +1,55 @@
+<!--pages/profile/profile.wxml-->
+<view class="container">
+  <!-- 顶部用户信息区域 -->
+  <view class="header">
+    <view class="user-info">
+      <view class="avatar">
+        <image wx:if="{{userInfo.avatar}}" src="{{userInfo.avatar}}" mode="aspectFill" />
+        <text wx:else class="avatar-placeholder">👤</text>
+      </view>
+      <view class="user-detail">
+        <text class="username">{{userInfo.openid || userInfo.nickname || '用户'}}</text>
+        <text class="vip-level">{{isAdmin ? '管理员' : '普通会员'}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 功能列表 -->
+  <view class="menu-list">
+    <!-- 每日签到 -->
+    <view class="menu-item" bindtap="onSignIn">
+      <view class="menu-left">
+        <text class="menu-icon">📅</text>
+        <text class="menu-text">每日签到</text>
+      </view>
+      <text class="arrow">></text>
+    </view>
+
+    <!-- 上传管理（仅管理员可见） -->
+    <view wx:if="{{isAdmin}}" class="menu-item" bindtap="goToUpload">
+      <view class="menu-left">
+        <text class="menu-icon">📤</text>
+        <text class="menu-text">上传管理</text>
+      </view>
+      <text class="arrow">></text>
+    </view>
+
+    <!-- 菜单管理（仅管理员可见） -->
+    <view wx:if="{{isAdmin}}" class="menu-item" bindtap="goToMenuManagement">
+      <view class="menu-left">
+        <text class="menu-icon">🍽️</text>
+        <text class="menu-text">菜单管理</text>
+      </view>
+      <text class="arrow">></text>
+    </view>
+
+    <!-- 退出登录 -->
+    <view class="menu-item" bindtap="onLogout">
+      <view class="menu-left">
+        <text class="menu-icon">🚪</text>
+        <text class="menu-text">退出登录</text>
+      </view>
+      <text class="arrow">></text>
+    </view>
+  </view>
+</view>

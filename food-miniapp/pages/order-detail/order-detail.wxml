@@ -1,0 +1,82 @@
+<!--pages/order-detail/order-detail.wxml-->
+<view class="container">
+  <!-- 加载中 -->
+  <view wx:if="{{loading}}" class="loading">
+    <text>加载中...</text>
+  </view>
+
+  <!-- 订单内容 -->
+  <view wx:if="{{!loading && order}}" class="order-content">
+    <!-- 订单状态 -->
+    <view class="order-status">
+      <text class="status-text">{{order.status === 'PENDING' ? '下单成功' : order.status}}</text>
+    </view>
+
+    <!-- 订单信息 -->
+    <view class="order-info">
+      <view class="info-row">
+        <text class="label">订单号</text>
+        <text class="value">{{order.orderNo}}</text>
+      </view>
+      <view class="info-row">
+        <text class="label">下单时间</text>
+        <text class="value">{{order.createdAt}}</text>
+      </view>
+      <view class="info-row">
+        <text class="label">取餐时间</text>
+        <text class="value">{{order.pickupTime}}</text>
+      </view>
+    </view>
+
+    <!-- 菜品列表 -->
+    <view class="order-items">
+      <text class="section-title">菜品明细</text>
+      <view wx:for="{{order.items}}" wx:key="id" class="item">
+        <image class="item-image" src="{{item.imageUrl}}" mode="aspectFill" />
+        <view class="item-info">
+          <text class="item-name">{{item.menuItemName}}</text>
+          <view class="item-price">
+            <text class="price">¥{{item.price.toFixed(2)}} × {{item.quantity}}</text>
+            <text class="subtotal">¥{{item.subtotal.toFixed(2)}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 订单金额 -->
+    <view class="order-amount">
+      <view class="amount-row">
+        <text class="label">菜品总价</text>
+        <text class="value">¥{{order.totalAmount.toFixed(2)}}</text>
+      </view>
+      <view class="amount-row">
+        <text class="label">优惠金额</text>
+        <text class="value">-¥{{order.discountAmount.toFixed(2)}}</text>
+      </view>
+      <view class="amount-row total">
+        <text class="label">实付金额</text>
+        <text class="value">¥{{order.actualAmount.toFixed(2)}}</text>
+      </view>
+    </view>
+
+    <!-- 备注 -->
+    <view wx:if="{{order.remark}}" class="order-remark">
+      <text class="label">备注</text>
+      <text class="remark-text">{{order.remark}}</text>
+    </view>
+
+    <!-- 提示信息 -->
+    <view class="order-tips">
+      <text class="tip-title">温馨提示</text>
+      <text class="tip-text">订单确定后不可取消</text>
+      <text class="tip-text">如需取消请联系管理员</text>
+    </view>
+  </view>
+
+  <!-- 底部操作栏（不显示返回修改和提交订单按钮） -->
+  <view wx:if="{{!loading && order}}" class="bottom-bar">
+    <view class="home-btn" bindtap="goToHome">
+      <text>返回首页</text>
+    </view>
+  </view>
+</view>

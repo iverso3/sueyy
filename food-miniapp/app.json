@@ -1,0 +1,48 @@
+{
+  "pages": [
+    "pages/login/login",
+    "pages/menu/menu",
+    "pages/cart/cart",
+    "pages/order/order",
+    "pages/order-detail/order-detail",
+    "pages/upload/upload",
+    "pages/profile/profile",
+    "pages/menu-management/menu-management",
+    "pages/dish-edit/dish-edit"
+  ],
+  "window": {
+    "backgroundTextStyle": "light",
+    "navigationBarBackgroundColor": "#fff",
+    "navigationBarTitleText": "在线点餐",
+    "navigationBarTextStyle": "black"
+  },
+  "tabBar": {
+    "custom": true,
+    "color": "#999999",
+    "selectedColor": "#ff6b35",
+    "backgroundColor": "#ffffff",
+    "borderStyle": "black",
+    "list": [
+      {
+        "pagePath": "pages/menu/menu",
+        "text": "菜单",
+        "iconPath": "images/tab/menu.png",
+        "selectedIconPath": "images/tab/menu_active.png"
+      },
+      {
+        "pagePath": "pages/order/order",
+        "text": "订单",
+        "iconPath": "images/tab/order.png",
+        "selectedIconPath": "images/tab/order_active.png"
+      },
+      {
+        "pagePath": "pages/profile/profile",
+        "text": "我的",
+        "iconPath": "images/tab/upload.png",
+        "selectedIconPath": "images/tab/upload_active.png"
+      }
+    ]
+  },
+  "style": "v2",
+  "sitemapLocation": "sitemap.json"
+}

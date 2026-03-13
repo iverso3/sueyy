@@ -1,0 +1,21 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(curl -X POST -H \"Content-Type: application/json\" -d '{\"\"code\"\": \"\"test_code\"\"}' \"http://localhost:8080/api/auth/login\")",
+      "Bash(mvn clean:*)",
+      "Bash(curl -H \"X-User-Id: 21\" \"http://localhost:8080/api/cart/get\")",
+      "Bash(curl -s -H \"Content-Type: application/json\" -H \"X-User-Id: 1\" -X POST -d \"{\"\"menuItemId\"\": 1, \"\"quantity\"\": 1}\" http://localhost:8080/api/cart/items)",
+      "Bash(curl -s -H \"Content-Type: application/json\" -H \"X-User-Id: 9999\" -X POST -d \"{\"\"menuItemId\"\": 1, \"\"quantity\"\": 1}\" http://localhost:8080/api/cart/items)",
+      "Bash(curl -v -H \"Content-Type: application/json\" -H \"X-User-Id: 1\" -X POST -d \"{\"\"menuItemId\"\": 1, \"\"quantity\"\": 1}\" http://localhost:8080/api/cart/items)",
+      "Bash(find D:/suyeeNN/food-server/src -type f -name *.java)",
+      "Bash(node -c pages/cart/cart.js)",
+      "Bash(claude mcp:*)",
+      "WebFetch(domain:pixso.cn)",
+      "WebFetch(domain:minimax-algeng-chat-tts.oss-cn-wulanchabu.aliyuncs.com)",
+      "mcp__pixso-desktop__getNodeDSL",
+      "mcp__pixso-desktop__getImage",
+      "mcp__pixso-desktop__getCode",
+      "mcp__pixso-desktop__getExportImage"
+    ]
+  }
+}

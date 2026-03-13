@@ -1,0 +1,288 @@
+/* pages/menu/menu.wxss */
+.container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background-color: #F3F4F6;
+}
+
+/* 顶部区域 - 橙色背景 */
+.header {
+  background: linear-gradient(135deg, #F97316, #FB923C);
+  padding: 20rpx 30rpx 30rpx;
+  flex-shrink: 0;
+}
+
+.header-main {
+  display: flex;
+  align-items: center;
+  margin-bottom: 24rpx;
+}
+
+.header-left {
+  width: 60rpx;
+  height: 60rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.home-icon {
+  font-size: 40rpx;
+}
+
+.header-center {
+  flex: 1;
+  margin-left: 20rpx;
+}
+
+.store-name {
+  display: block;
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.store-welcome {
+  display: block;
+  font-size: 24rpx;
+  color: rgba(255, 255, 255, 0.9);
+  margin-top: 4rpx;
+}
+
+/* 搜索框 */
+.search-bar {
+  display: flex;
+  align-items: center;
+  background-color: rgba(255, 255, 255, 0.25);
+  border-radius: 40rpx;
+  padding: 16rpx 24rpx;
+  border: 2rpx solid rgba(255, 255, 255, 0.4);
+}
+
+.search-icon {
+  font-size: 28rpx;
+  margin-right: 12rpx;
+}
+
+.search-input {
+  flex: 1;
+  font-size: 26rpx;
+  color: #ffffff;
+  background: transparent;
+}
+
+.search-input::placeholder {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+/* 主内容区 - 左右分栏 */
+.main-content {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+/* 左侧分类导航 */
+.category-sidebar {
+  width: 180rpx;
+  background-color: #F9FAFB;
+  flex-shrink: 0;
+}
+
+.category-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24rpx 12rpx;
+  font-size: 22rpx;
+  color: #6B7280;
+  position: relative;
+  transition: all 0.3s;
+}
+
+.category-item.active {
+  background-color: #ffffff;
+  color: #F97316;
+  font-weight: 600;
+}
+
+.category-item.active::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 6rpx;
+  height: 40rpx;
+  background-color: #F97316;
+  border-radius: 0 4rpx 4rpx 0;
+}
+
+.category-icon {
+  font-size: 36rpx;
+  margin-bottom: 8rpx;
+}
+
+.category-name {
+  text-align: center;
+  line-height: 1.2;
+}
+
+/* 右侧菜品列表 */
+.menu-scroll {
+  flex: 1;
+  background-color: #ffffff;
+}
+
+.menu-list {
+  padding: 20rpx;
+}
+
+.menu-item {
+  display: flex;
+  background-color: #ffffff;
+  border-radius: 16rpx;
+  overflow: hidden;
+  margin-bottom: 20rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.06);
+}
+
+/* 菜品图片区域 */
+.item-image-wrap {
+  position: relative;
+  width: 200rpx;
+  height: 200rpx;
+  flex-shrink: 0;
+}
+
+.item-image {
+  width: 100%;
+  height: 100%;
+}
+
+.item-tag {
+  position: absolute;
+  left: 0;
+  top: 0;
+  padding: 4rpx 12rpx;
+  background-color: #EF4444;
+  color: #ffffff;
+  font-size: 18rpx;
+  font-weight: 500;
+  border-radius: 8rpx 0 8rpx 0;
+}
+
+/* 菜品信息 */
+.item-info {
+  flex: 1;
+  padding: 16rpx 20rpx;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.item-name {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #1F2937;
+  line-height: 1.3;
+}
+
+.item-description {
+  font-size: 22rpx;
+  color: #9CA3AF;
+  line-height: 1.4;
+  margin-top: 8rpx;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.item-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 12rpx;
+}
+
+.item-price {
+  display: flex;
+  align-items: baseline;
+}
+
+.price-symbol {
+  font-size: 22rpx;
+  font-weight: 600;
+  color: #F97316;
+}
+
+.price-value {
+  font-size: 32rpx;
+  font-weight: 700;
+  color: #F97316;
+}
+
+.add-btn {
+  width: 48rpx;
+  height: 48rpx;
+  background: linear-gradient(135deg, #F97316, #FB923C);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  font-size: 28rpx;
+  font-weight: bold;
+  box-shadow: 0 4rpx 12rpx rgba(249, 115, 22, 0.3);
+}
+
+/* 加载状态 */
+.loading, .no-more, .empty {
+  text-align: center;
+  padding: 40rpx;
+  font-size: 24rpx;
+  color: #9CA3AF;
+}
+
+.empty-icon {
+  font-size: 60rpx;
+  display: block;
+  margin-bottom: 16rpx;
+}
+
+/* 悬浮购物车按钮 */
+.float-cart {
+  position: fixed;
+  bottom: 120rpx;
+  right: 30rpx;
+  width: 100rpx;
+  height: 100rpx;
+  background: linear-gradient(135deg, #F97316, #FB923C);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4rpx 20rpx rgba(249, 115, 22, 0.4);
+  z-index: 99;
+}
+
+.cart-icon {
+  font-size: 44rpx;
+}
+
+.cart-badge {
+  position: absolute;
+  top: -10rpx;
+  right: -10rpx;
+  background-color: #EF4444;
+  color: #fff;
+  font-size: 22rpx;
+  padding: 4rpx 12rpx;
+  border-radius: 20rpx;
+  min-width: 32rpx;
+  text-align: center;
+}

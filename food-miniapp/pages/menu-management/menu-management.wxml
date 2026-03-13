@@ -1,0 +1,66 @@
+<!--pages/menu-management/menu-management.wxml-->
+<view class="container">
+  <!-- 搜索栏 -->
+  <view class="search-bar">
+    <view class="search-input-wrap">
+      <input class="search-input" placeholder="搜索菜品" bindinput="onSearchInput" bindconfirm="onSearch" />
+    </view>
+  </view>
+
+  <!-- 分类筛选 -->
+  <view class="category-filter">
+    <picker mode="selector" range="{{categories}}" range-key="name" bindchange="onCategoryChange">
+      <view class="category-picker">
+        <text>{{selectedCategoryId ? categories[selectedCategoryId].name : '全部分类'}}</text>
+        <text class="arrow">▼</text>
+      </view>
+    </picker>
+  </view>
+
+  <!-- 菜品列表 -->
+  <scroll-view class="dish-list" scroll-y="true">
+    <block wx:for="{{menuItems}}" wx:key="id">
+      <view class="dish-item" bindtap="goToEditDish" data-id="{{item.id}}">
+        <view class="dish-image">
+          <image wx:if="{{item.imageUrl}}" src="{{item.imageUrl}}" mode="aspectFill" />
+          <view wx:else class="image-placeholder">暂无图片</view>
+        </view>
+        <view class="dish-info">
+          <view class="dish-header">
+            <text class="dish-name">{{item.name}}</text>
+            <text class="dish-status {{item.isActive ? 'active' : 'inactive'}}">{{item.isActive ? '在售' : '停售'}}</text>
+          </view>
+          <text class="dish-category">{{item.categoryName}}</text>
+          <view class="dish-footer">
+            <text class="dish-price">¥{{item.price}}</text>
+            <text wx:if="{{item.originalPrice}}" class="dish-original-price">¥{{item.originalPrice}}</text>
+            <view class="dish-tags">
+              <text wx:if="{{item.isRecommended}}" class="tag recommended">推荐</text>
+              <text wx:if="{{item.isHot}}" class="tag hot">热销</text>
+            </view>
+          </view>
+        </view>
+        <view class="dish-actions">
+          <view class="action-btn edit" catchtap="goToEditDish" data-id="{{item.id}}">编辑</view>
+          <view class="action-btn delete" catchtap="onDeleteDish" data-id="{{item.id}}" data-name="{{item.name}}">删除</view>
+        </view>
+      </view>
+    </block>
+
+    <!-- 加载状态 -->
+    <view class="loading-status" wx:if="{{loading}}">
+      <text>加载中...</text>
+    </view>
+    <view class="no-more" wx:elif="{{!hasMore && menuItems.length > 0}}">
+      <text>没有更多了</text>
+    </view>
+    <view class="empty" wx:elif="{{menuItems.length === 0}}">
+      <text>暂无菜品</text>
+    </view>
+  </scroll-view>
+
+  <!-- 新增按钮 -->
+  <view class="add-btn" bindtap="goToAddDish">
+    <text>+ 新增菜品</text>
+  </view>
+</view>

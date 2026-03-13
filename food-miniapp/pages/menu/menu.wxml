@@ -1,0 +1,80 @@
+<!--pages/menu/menu.wxml-->
+<view class="container">
+  <!-- 顶部区域 - 橙色背景 -->
+  <view class="header">
+    <view class="header-main">
+      <view class="header-left">
+        <text class="home-icon">🏠</text>
+      </view>
+      <view class="header-center">
+        <text class="store-name">苏珊牛牛的家庭后厨</text>
+        <text class="store-welcome">欢迎回家吃饭</text>
+      </view>
+    </view>
+    <!-- 搜索框 -->
+    <view class="search-bar">
+      <text class="search-icon">🔍</text>
+      <input class="search-input" placeholder="想吃点什么..." bindinput="onSearchInput" />
+    </view>
+  </view>
+
+  <!-- 主内容区 - 左右分栏 -->
+  <view class="main-content">
+    <!-- 左侧分类导航 -->
+    <scroll-view class="category-sidebar" scroll-y="true">
+      <view
+        wx:for="{{categories}}"
+        wx:key="id"
+        class="category-item {{currentCategory == item.id ? 'active' : ''}}"
+        bindtap="switchCategory"
+        data-id="{{item.id}}"
+      >
+        <view class="category-icon">{{item.icon || '🍽️'}}</view>
+        <view class="category-name">{{item.name}}</view>
+      </view>
+    </scroll-view>
+
+    <!-- 右侧菜品列表 -->
+    <scroll-view class="menu-scroll" scroll-y="true" scroll-into-view="{{'category-' + currentCategory}}">
+      <view class="menu-list">
+        <view wx:for="{{menuItems}}" wx:key="id" class="menu-item">
+          <!-- 菜品图片 -->
+          <view class="item-image-wrap">
+            <image class="item-image" src="{{item.imageUrl}}" mode="aspectFill" lazy-load="true" />
+            <view wx:if="{{item.isRecommended}}" class="item-tag">招牌</view>
+          </view>
+          <!-- 菜品信息 -->
+          <view class="item-info">
+            <view class="item-name">{{item.name}}</view>
+            <view class="item-description">{{item.description}}</view>
+            <view class="item-footer">
+              <view class="item-price">
+                <text class="price-symbol">¥</text>
+                <text class="price-value">{{item.price.toFixed(0)}}</text>
+              </view>
+              <view class="add-btn" bindtap="addToCart" data-id="{{item.id}}">+</view>
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <!-- 加载更多 -->
+      <view wx:if="{{loading}}" class="loading">
+        <text>加载中...</text>
+      </view>
+      <view wx:if="{{!hasMore && menuItems.length > 0}}" class="no-more">
+        <text>已经到底啦 ~</text>
+      </view>
+      <view wx:if="{{menuItems.length === 0 && !loading}}" class="empty">
+        <text class="empty-icon">🍜</text>
+        <text>暂无菜品</text>
+      </view>
+    </scroll-view>
+  </view>
+
+  <!-- 悬浮购物车按钮 -->
+  <view wx:if="{{wantCount > 0}}" class="float-cart" bindtap="goToWantList">
+    <text class="cart-icon">🛒</text>
+    <view class="cart-badge">{{wantCount}}</view>
+  </view>
+</view>

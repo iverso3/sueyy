@@ -1,0 +1,120 @@
+<!--pages/upload/upload.wxml-->
+<view class="container">
+  <!-- 标题 -->
+  <view class="header">
+    <text class="title">菜品图片上传</text>
+    <text class="subtitle">上传并更新菜品图片</text>
+  </view>
+
+  <!-- 菜品选择 -->
+  <view class="section">
+    <text class="section-title">选择菜品</text>
+    <picker
+      class="picker"
+      range="{{menuItems}}"
+      range-key="name"
+      value="{{selectedItemIndex}}"
+      bindchange="onSelectItem"
+    >
+      <view class="picker-content">
+        <text wx:if="{{selectedItemName}}" class="picker-text">{{selectedItemName}}</text>
+        <text wx:else class="picker-placeholder">请选择要更新图片的菜品</text>
+        <text class="picker-arrow">▼</text>
+      </view>
+    </picker>
+  </view>
+
+  <!-- 图片选择 -->
+  <view class="section">
+    <text class="section-title">选择图片</text>
+    <view class="image-section">
+      <!-- 预览图片 -->
+      <view wx:if="{{tempFilePaths.length > 0}}" class="image-preview" bindtap="previewImage">
+        <image class="preview-image" src="{{tempFilePaths[0]}}" mode="aspectFill" />
+        <view class="preview-overlay">
+          <text class="preview-text">点击预览</text>
+        </view>
+      </view>
+
+      <!-- 选择按钮 -->
+      <view wx:else class="image-upload" bindtap="onChooseImage">
+        <text class="upload-icon">📷</text>
+        <text class="upload-text">选择图片</text>
+        <text class="upload-hint">支持 JPG、PNG 格式，大小不超过5MB</text>
+      </view>
+    </view>
+
+    <!-- 选择图片按钮 -->
+    <view wx:if="{{tempFilePaths.length === 0}}" class="choose-btn" bindtap="onChooseImage">
+      <text>选择图片</text>
+    </view>
+    <view wx:else class="choose-btn" bindtap="onChooseImage">
+      <text>重新选择</text>
+    </view>
+  </view>
+
+  <!-- 上传按钮 -->
+  <view class="section">
+    <button
+      class="upload-btn {{uploading ? 'disabled' : ''}}"
+      bindtap="onUploadImage"
+      disabled="{{uploading || !selectedItemId || tempFilePaths.length === 0}}"
+    >
+      <text wx:if="{{uploading}}">上传中...</text>
+      <text wx:else>上传并更新菜品图片</text>
+    </button>
+  </view>
+
+  <!-- 上传结果 -->
+  <view wx:if="{{uploadResult}}" class="result-section">
+    <text class="section-title">上传结果</text>
+    <view class="{{uploadResult.success ? 'result-success' : 'result-error'}}">
+      <text class="result-icon">{{uploadResult.success ? '✓' : '✕'}}</text>
+      <text class="result-message">{{uploadResult.message}}</text>
+    </view>
+
+    <!-- 图片URL -->
+    <view wx:if="{{uploadResult.success && uploadResult.imageUrl}}" class="image-url-section">
+      <text class="url-title">图片URL:</text>
+      <view class="url-container">
+        <text class="url-text">{{uploadResult.imageUrl}}</text>
+        <view class="copy-btn" bindtap="copyImageUrl">
+          <text>复制</text>
+        </view>
+      </view>
+
+      <!-- 预览新图片 -->
+      <view class="new-image-preview">
+        <text class="preview-title">新图片预览:</text>
+        <image class="new-image" src="{{uploadResult.imageUrl}}" mode="aspectFill" />
+      </view>
+    </view>
+
+    <!-- 清除按钮 -->
+    <view class="clear-section">
+      <button class="clear-btn" bindtap="clearResult">
+        <text>清除结果并继续上传</text>
+      </button>
+    </view>
+  </view>
+
+  <!-- 使用说明 -->
+  <view class="instructions">
+    <text class="instructions-title">使用说明:</text>
+    <view class="instruction-item">
+      <text>1. 首先从列表中选择要更新图片的菜品</text>
+    </view>
+    <view class="instruction-item">
+      <text>2. 点击"选择图片"按钮，从相册或拍照选择图片</text>
+    </view>
+    <view class="instruction-item">
+      <text>3. 点击"上传并更新菜品图片"按钮完成操作</text>
+    </view>
+    <view class="instruction-item">
+      <text>4. 上传成功后，菜品图片会立即更新</text>
+    </view>
+    <view class="instruction-item">
+      <text>5. 可以在菜单页面查看更新后的菜品图片</text>
+    </view>
+  </view>
+</view>
