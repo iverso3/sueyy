@@ -1,10 +1,7 @@
 # 构建阶段
-FROM maven:3.9-eclipse-temurin-17 AS builder
+FROM registry.cn-hangzhou.aliyuncs.com/library/maven:3.9-eclipse-temurin-17 AS builder
 
 WORKDIR /app
-
-# 配置Maven使用阿里云镜像
-RUN echo '<settings><mirrors><mirror><id>aliyun</id><name>Aliyun</name><url>https://maven.aliyun.com/repository/central</url><mirrorOf>central</mirrorOf></mirror></mirrors></settings>' > /etc/maven/settings.xml
 
 # 复制 pom.xml 并下载依赖
 COPY pom.xml .
@@ -15,7 +12,7 @@ COPY src ./src
 RUN mvn clean package -DskipTests -B
 
 # 运行阶段
-FROM eclipse-temurin:17-jre-alpine
+FROM registry.cn-hangzhou.aliyuncs.com/library/eclipse-temurin:17-jre-alpine
 
 WORKDIR /app
 
