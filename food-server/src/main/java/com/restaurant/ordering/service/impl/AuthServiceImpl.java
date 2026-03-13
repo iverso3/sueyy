@@ -11,12 +11,14 @@ import com.restaurant.ordering.repository.UserRepository;
 import com.restaurant.ordering.service.AuthService;
 import com.restaurant.ordering.service.SessionService;
 import com.restaurant.ordering.util.JwtTokenProvider;
+import com.restaurant.ordering.util.WeChatUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -26,22 +28,21 @@ public class AuthServiceImpl implements AuthService {
     private final UserRepository userRepository;
     private final SessionService sessionService;
     private final JwtTokenProvider jwtTokenProvider;
+    private final WeChatUtil weChatUtil;
 
     @Override
     @Transactional
     public LoginResponse wechatLogin(LoginRequest request) {
         try {
-            // TODO: 后续对接真实微信登录API
-            // 1. 使用 code 调用微信登录凭证校验接口获取 session_key 和 openid
-            // 2. 根据 openid 查找或创建用户
-            // 示例代码：
-            // WeChatUtils weChatUtils = new WeChatUtils();
-            // WeChatSession session = weChatUtils.getSession(request.getCode());
-            // String openid = session.getOpenid();
+            // 调用微信登录凭证校验接口获取 openid
+            Map<String, String> session = weChatUtil.codeToSession(request.getCode());
+            String openid = session.get("openid");
 
-            // 模拟微信登录（当前使用）
-            // String openid = "mock_openid_" + System.currentTimeMillis();
-            String openid = "admin";
+            if (openid == null || openid.isEmpty()) {
+                throw new BusinessException(ErrorCode.WECHAT_LOGIN_FAILED);
+            }
+
+            log.info("微信登录成功: openid={}", openid);
 
             // 查找或创建用户
             User user = userRepository.findByOpenid(openid)
