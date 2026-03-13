@@ -3,7 +3,10 @@ FROM maven:3.9-eclipse-temurin-17 AS builder
 
 WORKDIR /app
 
-# 复制 pom.xml 并下载依赖（利用 Docker 缓存）
+# 配置Maven使用阿里云镜像
+RUN echo '<settings><mirrors><mirror><id>aliyun</id><name>Aliyun</name><url>https://maven.aliyun.com/repository/central</url><mirrorOf>central</mirrorOf></mirror></mirrors></settings>' > /etc/maven/settings.xml
+
+# 复制 pom.xml 并下载依赖
 COPY pom.xml .
 RUN mvn dependency:go-offline -B
 

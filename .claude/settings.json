@@ -15,7 +15,8 @@
       "mcp__pixso-desktop__getNodeDSL",
       "mcp__pixso-desktop__getImage",
       "mcp__pixso-desktop__getCode",
-      "mcp__pixso-desktop__getExportImage"
+      "mcp__pixso-desktop__getExportImage",
+      "Read(//c/Users/86180/.docker/**)"
     ]
   }
 }
