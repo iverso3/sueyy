@@ -14,7 +14,7 @@
     <!-- 搜索框 -->
     <view class="search-bar">
       <text class="search-icon">🔍</text>
-      <input class="search-input" placeholder="想吃点什么..." bindinput="onSearchInput" />
+      <input class="search-input" placeholder="想吃点什么..." bindinput="onSearchInput" bindconfirm="onSearch" />
     </view>
   </view>
 
