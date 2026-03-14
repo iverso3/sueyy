@@ -46,6 +46,9 @@ management:
     health:
       show-details: when-authorized
 
+file:
+  base-url: https://qmihmahoouke.cloud.sealos.io/api
+
 wechat:
   miniapp:
     app-id: ${WECHAT_APP_ID:wxba5a6b871bc045bc}
