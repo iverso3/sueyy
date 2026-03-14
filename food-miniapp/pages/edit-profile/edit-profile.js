@@ -63,7 +63,9 @@ Page({
    * 保存资料
    */
   onSave() {
+    console.log('onSave called');
     const { nickname, phone, avatarUrl } = this.data;
+    console.log('data:', { nickname, phone, avatarUrl });
 
     if (!nickname || nickname.trim() === '') {
       wx.showToast({
@@ -74,6 +76,7 @@ Page({
     }
 
     const app = getApp();
+    console.log('token:', app.globalData.token);
 
     wx.showLoading({ title: '保存中...' });
 
@@ -109,37 +112,37 @@ Page({
    */
   doSave(data) {
     const app = getApp();
+    const apiBaseUrl = app.globalData.apiBaseUrl;
+    const token = app.globalData.token;
+    const userId = app.globalData.userId;
 
-    app.request('/user/profile', {
+    console.log('doSave - userId:', userId);
+    console.log('doSave - apiBaseUrl:', apiBaseUrl);
+
+    wx.request({
+      url: apiBaseUrl + '/user/profile',
       method: 'PUT',
-      data: data
-    }).then(res => {
-      wx.hideLoading();
-
-      if (res.code === 200) {
-        // 更新全局用户信息
-        app.globalData.userInfo = { ...app.globalData.userInfo, ...data };
-
-        wx.showToast({
-          title: '保存成功',
-          icon: 'success'
-        });
-
-        setTimeout(() => {
-          wx.navigateBack();
-        }, 1500);
-      } else {
-        wx.showToast({
-          title: res.message || '保存失败',
-          icon: 'none'
-        });
+      data: data,
+      header: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token,
+        'X-User-Id': userId
+      },
+      success: (res) => {
+        wx.hideLoading();
+        if (res.data.code === 200) {
+          app.globalData.userInfo = { ...app.globalData.userInfo, ...data };
+          wx.showToast({ title: '保存成功', icon: 'success' });
+          setTimeout(() => { wx.navigateBack(); }, 1500);
+        } else {
+          wx.showToast({ title: res.data.message || '保存失败', icon: 'none' });
+        }
+      },
+      fail: (err) => {
+        wx.hideLoading();
+        wx.showToast({ title: '请求失败', icon: 'none' });
+        console.error('保存失败:', err);
       }
-    }).catch(err => {
-      wx.hideLoading();
-      wx.showToast({
-        title: '保存失败',
-        icon: 'none'
-      });
     });
   }
 });

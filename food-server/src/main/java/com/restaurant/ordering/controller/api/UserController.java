@@ -1,6 +1,6 @@
 package com.restaurant.ordering.controller.api;
 
-import com.restaurant.ordering.common.ApiResponse;
+import com.restaurant.ordering.model.dto.response.ApiResponse;
 import com.restaurant.ordering.model.entity.User;
 import com.restaurant.ordering.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +21,10 @@ public class UserController {
      * 获取当前用户信息
      */
     @GetMapping("/info")
-    public ApiResponse<User> getUserInfo(@RequestAttribute("userId") Long userId) {
+    public ApiResponse<User> getUserInfo(@RequestHeader(value = "X-User-Id", required = false) Long userId) {
+        if (userId == null) {
+            return ApiResponse.error("用户未登录");
+        }
         return userRepository.findById(userId)
                 .map(ApiResponse::success)
                 .orElse(ApiResponse.error("用户不存在"));
@@ -32,8 +35,15 @@ public class UserController {
      */
     @PutMapping("/profile")
     public ApiResponse<User> updateProfile(
-            @RequestAttribute("userId") Long userId,
+            @RequestHeader(value = "X-User-Id", required = false) Long userId,
             @RequestBody Map<String, String> params) {
+
+        log.info("更新用户资料: userId={}, params={}", userId, params);
+
+        if (userId == null) {
+            log.warn("用户未登录");
+            return ApiResponse.error("用户未登录");
+        }
 
         return userRepository.findById(userId)
                 .map(user -> {
