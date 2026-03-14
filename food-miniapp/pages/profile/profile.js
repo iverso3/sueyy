@@ -46,7 +46,7 @@ Page({
       this.setData({
         userInfo: {
           username: '用户',
-          avatar: '',
+          avatarUrl: '',
           role: 'USER'
         },
         isAdmin: false

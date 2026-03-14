@@ -4,7 +4,7 @@
   <view class="header">
     <view class="user-info">
       <view class="avatar">
-        <image wx:if="{{userInfo.avatar}}" src="{{userInfo.avatar}}" mode="aspectFill" />
+        <image wx:if="{{userInfo.avatarUrl}}" src="{{userInfo.avatarUrl}}" mode="aspectFill" />
         <text wx:else class="avatar-placeholder">👤</text>
       </view>
       <view class="user-detail">
