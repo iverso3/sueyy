@@ -8,7 +8,8 @@
     "pages/upload/upload",
     "pages/profile/profile",
     "pages/menu-management/menu-management",
-    "pages/dish-edit/dish-edit"
+    "pages/dish-edit/dish-edit",
+    "pages/edit-profile/edit-profile"
   ],
   "window": {
     "backgroundTextStyle": "light",

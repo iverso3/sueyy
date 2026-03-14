@@ -73,6 +73,15 @@ Page({
   },
 
   /**
+   * 跳转到编辑资料页面
+   */
+  goToEditProfile() {
+    wx.navigateTo({
+      url: '/pages/edit-profile/edit-profile'
+    });
+  },
+
+  /**
    * 每日签到
    */
   onSignIn() {
