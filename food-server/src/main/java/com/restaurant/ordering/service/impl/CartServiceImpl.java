@@ -196,6 +196,7 @@ public class CartServiceImpl implements CartService {
         cartItem.setQuantity(quantity);
         cartItem.setPrice(menuItem.getPrice());
         cartItem.setSubtotal(menuItem.getPrice().multiply(BigDecimal.valueOf(quantity)));
+        cartItem.setImageUrl(menuItem.getImageUrl());
 
         CartItem savedItem = cartItemRepository.save(cartItem);
         recalculateCart(cart);
@@ -277,6 +278,7 @@ public class CartServiceImpl implements CartService {
         response.setId(cartItem.getId());
         response.setMenuItemId(cartItem.getMenuItem().getId());
         response.setMenuItemName(cartItem.getMenuItem().getName());
+        response.setImageUrl(cartItem.getImageUrl());
         response.setPrice(cartItem.getPrice());
         response.setQuantity(cartItem.getQuantity());
         response.setSubtotal(cartItem.getSubtotal());

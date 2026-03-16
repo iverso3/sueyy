@@ -8,7 +8,7 @@
         <text wx:else class="avatar-placeholder">👤</text>
       </view>
       <view class="user-detail">
-        <text class="username">{{userInfo.openid || userInfo.nickname || '用户'}}</text>
+        <text class="username">{{userInfo.nickname || userInfo.openid || '用户'}}</text>
         <text class="vip-level">{{isAdmin ? '管理员' : '普通会员'}}</text>
       </view>
     </view>

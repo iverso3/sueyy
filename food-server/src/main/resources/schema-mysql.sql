@@ -162,4 +162,7 @@ CREATE TABLE IF NOT EXISTS order_items (
 );
 
 CREATE INDEX idx_order_id ON order_items(order_id);
+
+-- 添加购物车项图片URL字段 (2026-03-16)
+ALTER TABLE cart_items ADD COLUMN image_url VARCHAR(500);
 CREATE INDEX idx_menu_item_id_oi ON order_items(menu_item_id);

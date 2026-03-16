@@ -17,6 +17,7 @@ public class CartResponse {
         private Long id;
         private Long menuItemId;
         private String menuItemName;
+        private String imageUrl;
         private BigDecimal price;
         private Integer quantity;
         private BigDecimal subtotal;
