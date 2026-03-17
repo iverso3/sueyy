@@ -32,6 +32,19 @@ Page({
   },
 
   /**
+   * 格式化价格，处理Java BigDecimal对象
+   */
+  formatPrice(price) {
+    if (!price) return '0.00';
+    if (typeof price === 'string') return price;
+    if (typeof price === 'number') return price.toFixed(2);
+    // 处理Java BigDecimal对象
+    if (price.toFixed) return price.toFixed(2);
+    if (price.value) return String(price.value);
+    return String(price);
+  },
+
+  /**
    * 加载想吃数据
    */
   loadCartData() {
@@ -50,14 +63,17 @@ Page({
       if (response.code === 200 && response.data) {
         const cartData = response.data;
         let cartItems = cartData.items || [];
-        const totalPrice = cartData.totalPrice || 0;
-        const totalQuantity = cartData.totalQuantity || 0;
 
-        // 为每个商品添加selected字段（默认全选）
+        // 处理价格数据，转换为字符串
         cartItems = cartItems.map(item => ({
           ...item,
+          price: this.formatPrice(item.price),
+          subtotal: this.formatPrice(item.subtotal),
           selected: true
         }));
+
+        const totalPrice = this.formatPrice(cartData.totalPrice);
+        const totalQuantity = cartData.totalQuantity || 0;
 
         // 计算选中数量和金额
         const { selectedCount, selectedPrice } = this.calculateSelected(cartItems);
@@ -67,7 +83,7 @@ Page({
           totalPrice,
           totalQuantity,
           selectedCount,
-          selectedPrice,
+          selectedPrice: selectedPrice.toFixed ? selectedPrice.toFixed(2) : String(selectedPrice),
           selectAll: cartItems.length > 0,
           loading: false
         });
@@ -251,7 +267,7 @@ Page({
     cartItems.forEach(item => {
       if (item.selected) {
         selectedCount += item.quantity;
-        selectedPrice += item.subtotal;
+        selectedPrice += parseFloat(item.subtotal) || 0;
       }
     });
 
@@ -276,7 +292,7 @@ Page({
     this.setData({
       cartItems,
       selectedCount,
-      selectedPrice,
+      selectedPrice: selectedPrice.toFixed ? selectedPrice.toFixed(2) : String(selectedPrice),
       selectAll
     });
   },
@@ -296,7 +312,7 @@ Page({
     this.setData({
       cartItems,
       selectedCount,
-      selectedPrice,
+      selectedPrice: selectedPrice.toFixed ? selectedPrice.toFixed(2) : String(selectedPrice),
       selectAll
     });
   },
@@ -323,7 +339,7 @@ Page({
 
     wx.showModal({
       title: '确认下单',
-      content: `已选${this.data.selectedCount}个菜品，共¥${this.data.selectedPrice.toFixed(2)}，是否确认下单？`,
+      content: `已选${this.data.selectedCount}个菜品，共¥${this.data.selectedPrice}，是否确认下单？`,
       success: (res) => {
         if (res.confirm) {
           this.submitOrder();

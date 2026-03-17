@@ -5,6 +5,7 @@ import com.restaurant.ordering.exception.ErrorCode;
 import com.restaurant.ordering.model.dto.request.CreateOrderRequest;
 import com.restaurant.ordering.model.dto.response.OrderResponse;
 import com.restaurant.ordering.model.entity.*;
+import com.restaurant.ordering.model.enums.OrderStatus;
 import com.restaurant.ordering.repository.*;
 import com.restaurant.ordering.service.OrderService;
 import lombok.RequiredArgsConstructor;
@@ -70,7 +71,7 @@ public class OrderServiceImpl implements OrderService {
         order.setTotalAmount(totalAmount);
         order.setDiscountAmount(BigDecimal.ZERO);
         order.setActualAmount(totalAmount);
-        order.setStatus(com.restaurant.ordering.model.enums.OrderStatus.PENDING);
+        order.setStatus(com.restaurant.ordering.model.enums.OrderStatus.PLACED);
         order.setPaymentMethod(com.restaurant.ordering.model.enums.PaymentMethod.WECHAT);
         order.setPaymentStatus(com.restaurant.ordering.model.enums.PaymentStatus.UNPAID);
         // 处理配送时间
@@ -141,6 +142,98 @@ public class OrderServiceImpl implements OrderService {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    @Transactional
+    public OrderResponse updateOrderStatus(Long orderId, OrderStatus status) {
+        log.info("修改订单状态，订单ID: {}, 新状态: {}", orderId, status);
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.ORDER_NOT_FOUND));
+        order.setStatus(status);
+        Order savedOrder = orderRepository.save(order);
+        return buildOrderResponse(savedOrder);
+    }
+
+    @Override
+    @Transactional
+    public void deleteOrder(Long orderId, Long userId, String userRole) {
+        log.info("删除订单，订单ID: {}, 用户ID: {}, 角色: {}", orderId, userId, userRole);
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.ORDER_NOT_FOUND));
+
+        // 检查权限：管理员可以删除任意订单，用户只能删除自己的当天订单
+        boolean isAdmin = "ADMIN".equalsIgnoreCase(userRole);
+        boolean isOwnOrder = order.getUser().getId().equals(userId);
+
+        if (!isAdmin && !isOwnOrder) {
+            throw new BusinessException(ErrorCode.PERMISSION_DENIED, "无权删除此订单");
+        }
+
+        // 如果是用户删除自己的订单，检查是否是当天订单
+        if (!isAdmin && isOwnOrder) {
+            LocalDateTime today = LocalDateTime.now();
+            LocalDateTime startOfDay = today.toLocalDate().atStartOfDay();
+            if (order.getCreatedAt().isBefore(startOfDay)) {
+                throw new BusinessException(ErrorCode.PERMISSION_DENIED, "只能删除当天的订单");
+            }
+        }
+
+        // 删除订单项
+        List<OrderItem> orderItems = orderItemRepository.findByOrder(order);
+        orderItemRepository.deleteAll(orderItems);
+
+        // 删除订单
+        orderRepository.delete(order);
+        log.info("订单删除成功，订单ID: {}", orderId);
+    }
+
+    @Override
+    @Transactional
+    public OrderResponse deleteOrderItem(Long orderId, Long itemId, Long userId, String userRole) {
+        log.info("删除订单菜品，订单ID: {}, 菜品ID: {}, 用户ID: {}, 角色: {}", orderId, itemId, userId, userRole);
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.ORDER_NOT_FOUND));
+
+        // 检查权限
+        boolean isAdmin = "ADMIN".equalsIgnoreCase(userRole);
+        boolean isOwnOrder = order.getUser().getId().equals(userId);
+
+        if (!isAdmin && !isOwnOrder) {
+            throw new BusinessException(ErrorCode.PERMISSION_DENIED, "无权删除此订单的菜品");
+        }
+
+        // 如果是用户操作，检查是否是当天订单
+        if (!isAdmin && isOwnOrder) {
+            LocalDateTime today = LocalDateTime.now();
+            LocalDateTime startOfDay = today.toLocalDate().atStartOfDay();
+            if (order.getCreatedAt().isBefore(startOfDay)) {
+                throw new BusinessException(ErrorCode.PERMISSION_DENIED, "只能删除当天订单的菜品");
+            }
+        }
+
+        // 查找订单项
+        OrderItem orderItem = orderItemRepository.findById(itemId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.MENU_ITEM_NOT_FOUND, "菜品不存在"));
+
+        // 检查订单项是否属于该订单
+        if (!orderItem.getOrder().getId().equals(orderId)) {
+            throw new BusinessException(ErrorCode.PERMISSION_DENIED, "菜品不属于该订单");
+        }
+
+        // 减去金额
+        BigDecimal subtotal = orderItem.getSubtotal();
+        order.setTotalAmount(order.getTotalAmount().subtract(subtotal));
+        order.setActualAmount(order.getActualAmount().subtract(subtotal));
+
+        // 删除订单项
+        orderItemRepository.delete(orderItem);
+
+        // 保存订单
+        Order savedOrder = orderRepository.save(order);
+        log.info("订单菜品删除成功，菜品ID: {}", itemId);
+
+        return buildOrderResponse(savedOrder);
+    }
+
     /**
      * 解析配送时间
      */
@@ -193,6 +286,8 @@ public class OrderServiceImpl implements OrderService {
         OrderResponse response = new OrderResponse();
         response.setId(order.getId());
         response.setOrderNo(order.getOrderNo());
+        response.setUserId(order.getUser().getId());
+        response.setUserNickname(order.getUser().getNickname() != null ? order.getUser().getNickname() : order.getUser().getOpenid());
         response.setTotalAmount(order.getTotalAmount());
         response.setDiscountAmount(order.getDiscountAmount());
         response.setActualAmount(order.getActualAmount());

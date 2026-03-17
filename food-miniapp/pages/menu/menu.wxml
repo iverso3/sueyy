@@ -50,7 +50,7 @@
             <view class="item-footer">
               <view class="item-price">
                 <text class="price-symbol">¥</text>
-                <text class="price-value">{{item.price.toFixed(0)}}</text>
+                <text class="price-value">¥{{item.price}}</text>
               </view>
               <view class="add-btn" bindtap="addToCart" data-id="{{item.id}}">+</view>
             </view>
@@ -74,7 +74,7 @@
 
   <!-- 悬浮购物车按钮 -->
   <view wx:if="{{wantCount > 0}}" class="float-cart" bindtap="goToWantList">
-    <text class="cart-icon">🛒</text>
+    <image class="cart-icon-img" src="/images/icon/cart-add.png" mode="aspectFit" />
     <view class="cart-badge">{{wantCount}}</view>
   </view>
 </view>

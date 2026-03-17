@@ -16,7 +16,7 @@ public class CartResponse {
     public static class CartItemResponse {
         private Long id;
         private Long menuItemId;
-        private String menuItemName;
+        private String name;
         private String imageUrl;
         private BigDecimal price;
         private Integer quantity;

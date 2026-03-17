@@ -18,36 +18,75 @@
 
         <!-- 订单卡片列表 -->
         <view wx:if="{{item.expanded}}" class="group-orders">
-          <block wx:for="{{item.orders}}" wx:key="id">
-            <view class="order-card" bindtap="goToOrderDetail" data-id="{{item.id}}">
-              <!-- 订单头部 -->
-              <view class="order-header">
-                <view class="store-info">
-                  <image class="store-avatar" src="{{item.storeLogo || '/images/default-avatar.png'}}" mode="aspectFill" />
-                  <text class="store-name">{{item.storeName || '家庭厨房'}}</text>
-                  <text class="arrow-icon">></text>
-                </view>
-                <text class="order-status {{item.status}}">{{item.statusText}}</text>
+          <!-- 管理员模式：按用户分组显示 -->
+          <block wx:if="{{item.userGroups}}">
+            <block wx:for="{{item.userGroups}}" wx:key="userName" wx:for-item="userGroup">
+              <!-- 用户分组标题 -->
+              <view class="user-group">
+                <text class="user-name">👤 {{userGroup.userName}}</text>
               </view>
+              <!-- 用户下的订单 -->
+              <block wx:for="{{userGroup.orders}}" wx:key="id">
+                <view class="order-card" bindtap="goToOrderDetail" data-id="{{item.id}}">
+                  <view class="order-header">
+                    <view class="store-info">
+                      <image class="store-avatar" src="{{item.storeLogo || '/images/default-avatar.png'}}" mode="aspectFill" />
+                      <text class="store-name">{{item.storeName || '家庭厨房'}}</text>
+                      <text class="arrow-icon">></text>
+                    </view>
+                    <text class="order-status {{item.status}}">{{item.statusText}}</text>
+                  </view>
 
-              <!-- 商品信息 -->
-              <view class="order-content">
-                <view class="items-info">
-                  <text class="items-name">{{item.itemsText}}</text>
-                  <view class="items-list" wx:if="{{item.itemList && item.itemList.length > 0}}">
-                    <text wx:for="{{item.itemList}}" wx:key="index" wx:for-item="dishName" class="dish-tag">{{dishName}}</text>
+                  <view class="order-content">
+                    <view class="items-info">
+                      <text class="items-name">{{item.itemsText}}</text>
+                      <view class="items-list" wx:if="{{item.itemList && item.itemList.length > 0}}">
+                        <text wx:for="{{item.itemList}}" wx:key="index" wx:for-item="dishName" class="dish-tag">{{dishName}}</text>
+                      </view>
+                    </view>
+                    <view class="order-price">
+                      <text class="price-value">¥{{item.actualAmount}}</text>
+                    </view>
+                  </view>
+
+                  <view class="order-footer">
+                    <text class="order-time">{{item.createdAt}}</text>
                   </view>
                 </view>
-                <view class="order-price">
-                  <text class="price-value">¥{{item.actualAmount}}</text>
+              </block>
+            </block>
+          </block>
+
+          <!-- 普通用户模式：直接显示订单 -->
+          <block wx:else>
+            <block wx:for="{{item.orders}}" wx:key="id">
+              <view class="order-card" bindtap="goToOrderDetail" data-id="{{item.id}}">
+                <view class="order-header">
+                  <view class="store-info">
+                    <image class="store-avatar" src="{{item.storeLogo || '/images/default-avatar.png'}}" mode="aspectFill" />
+                    <text class="store-name">{{item.storeName || '家庭厨房'}}</text>
+                    <text class="arrow-icon">></text>
+                  </view>
+                  <text class="order-status {{item.status}}">{{item.statusText}}</text>
+                </view>
+
+                <view class="order-content">
+                  <view class="items-info">
+                    <text class="items-name">{{item.itemsText}}</text>
+                    <view class="items-list" wx:if="{{item.itemList && item.itemList.length > 0}}">
+                      <text wx:for="{{item.itemList}}" wx:key="index" wx:for-item="dishName" class="dish-tag">{{dishName}}</text>
+                    </view>
+                  </view>
+                  <view class="order-price">
+                    <text class="price-value">¥{{item.actualAmount}}</text>
+                  </view>
+                </view>
+
+                <view class="order-footer">
+                  <text class="order-time">{{item.createdAt}}</text>
                 </view>
               </view>
-
-              <!-- 订单底部 -->
-              <view class="order-footer">
-                <text class="order-time">{{item.createdAt}}</text>
-              </view>
-            </view>
+            </block>
           </block>
         </view>
       </block>

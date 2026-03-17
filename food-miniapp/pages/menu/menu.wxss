@@ -207,6 +207,7 @@
   align-items: center;
   justify-content: space-between;
   margin-top: 12rpx;
+  min-height: 50rpx;
 }
 
 .item-price {
@@ -272,6 +273,11 @@
 
 .cart-icon {
   font-size: 44rpx;
+}
+
+.cart-icon-img {
+  width: 50rpx;
+  height: 50rpx;
 }
 
 .cart-badge {

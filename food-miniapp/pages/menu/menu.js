@@ -230,9 +230,11 @@ Page({
       method: 'GET',
       data: params
     }).then(response => {
+      console.log('菜单数据:', response);
       if (response.code === 200) {
         const data = response.data || {};
         const items = data.content || data.items || [];
+        console.log('items[0]:', items[0]);
 
         // 更新数据
         if (refresh) {

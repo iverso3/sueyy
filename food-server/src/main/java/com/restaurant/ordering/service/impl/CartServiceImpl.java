@@ -265,7 +265,9 @@ public class CartServiceImpl implements CartService {
         response.setTotalQuantity(cartItems.stream()
                 .mapToInt(CartItem::getQuantity)
                 .sum());
-        response.setTotalPrice(cart.getTotalPrice());
+        response.setTotalPrice(cartItems.stream()
+                .map(CartItem::getSubtotal)
+                .reduce(BigDecimal.ZERO, BigDecimal::add));
 
         return response;
     }
@@ -277,7 +279,7 @@ public class CartServiceImpl implements CartService {
         CartItemResponse response = new CartItemResponse();
         response.setId(cartItem.getId());
         response.setMenuItemId(cartItem.getMenuItem().getId());
-        response.setMenuItemName(cartItem.getMenuItem().getName());
+        response.setName(cartItem.getMenuItem().getName());
         response.setImageUrl(cartItem.getImageUrl());
         response.setPrice(cartItem.getPrice());
         response.setQuantity(cartItem.getQuantity());

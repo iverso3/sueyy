@@ -9,7 +9,12 @@
   <view wx:if="{{!loading && order}}" class="order-content">
     <!-- 订单状态 -->
     <view class="order-status">
-      <text class="status-text">{{order.status === 'PENDING' ? '下单成功' : order.status}}</text>
+      <text class="status-text">{{order.status === 'PLACED' ? '已下单' : order.status === 'COMPLETED' ? '已制作完成' : order.status}}</text>
+    </view>
+
+    <!-- 管理员状态修改按钮 -->
+    <view wx:if="{{isAdmin}}" class="admin-status-btn" bindtap="changeOrderStatus">
+      <text>修改状态</text>
     </view>
 
     <!-- 订单信息 -->
@@ -17,6 +22,10 @@
       <view class="info-row">
         <text class="label">订单号</text>
         <text class="value">{{order.orderNo}}</text>
+      </view>
+      <view wx:if="{{isAdmin}}" class="info-row">
+        <text class="label">下单人</text>
+        <text class="value">{{order.userNickname || order.userId}}</text>
       </view>
       <view class="info-row">
         <text class="label">下单时间</text>
@@ -34,10 +43,16 @@
       <view wx:for="{{order.items}}" wx:key="id" class="item">
         <image class="item-image" src="{{item.imageUrl}}" mode="aspectFill" />
         <view class="item-info">
-          <text class="item-name">{{item.menuItemName}}</text>
+          <view class="item-name-row">
+            <text class="item-name">{{item.menuItemName}}</text>
+            <!-- 删除菜品按钮 -->
+            <view wx:if="{{canEdit}}" class="delete-item-btn" bindtap="deleteOrderItem" data-id="{{item.id}}">
+              <text>删除</text>
+            </view>
+          </view>
           <view class="item-price">
-            <text class="price">¥{{item.price.toFixed(2)}} × {{item.quantity}}</text>
-            <text class="subtotal">¥{{item.subtotal.toFixed(2)}}</text>
+            <text class="price">¥{{item.price}} × {{item.quantity}}</text>
+            <text class="subtotal">¥{{item.subtotal}}</text>
           </view>
         </view>
       </view>
@@ -47,15 +62,15 @@
     <view class="order-amount">
       <view class="amount-row">
         <text class="label">菜品总价</text>
-        <text class="value">¥{{order.totalAmount.toFixed(2)}}</text>
+        <text class="value">¥{{order.totalAmount}}</text>
       </view>
       <view class="amount-row">
         <text class="label">优惠金额</text>
-        <text class="value">-¥{{order.discountAmount.toFixed(2)}}</text>
+        <text class="value">-¥{{order.discountAmount}}</text>
       </view>
       <view class="amount-row total">
         <text class="label">实付金额</text>
-        <text class="value">¥{{order.actualAmount.toFixed(2)}}</text>
+        <text class="value">¥{{order.actualAmount}}</text>
       </view>
     </view>
 
@@ -73,8 +88,12 @@
     </view>
   </view>
 
-  <!-- 底部操作栏（不显示返回修改和提交订单按钮） -->
+  <!-- 底部操作栏 -->
   <view wx:if="{{!loading && order}}" class="bottom-bar">
+    <!-- 删除订单按钮 -->
+    <view wx:if="{{canEdit}}" class="delete-order-btn" bindtap="deleteOrder">
+      <text>删除订单</text>
+    </view>
     <view class="home-btn" bindtap="goToHome">
       <text>返回首页</text>
     </view>

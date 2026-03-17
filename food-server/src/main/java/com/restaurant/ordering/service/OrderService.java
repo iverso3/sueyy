@@ -2,6 +2,7 @@ package com.restaurant.ordering.service;
 
 import com.restaurant.ordering.model.dto.request.CreateOrderRequest;
 import com.restaurant.ordering.model.dto.response.OrderResponse;
+import com.restaurant.ordering.model.enums.OrderStatus;
 
 import java.util.List;
 
@@ -14,4 +15,10 @@ public interface OrderService {
     List<OrderResponse> getOrdersByUserId(Long userId);
 
     List<OrderResponse> getAllOrders();
+
+    OrderResponse updateOrderStatus(Long orderId, OrderStatus status);
+
+    void deleteOrder(Long orderId, Long userId, String userRole);
+
+    OrderResponse deleteOrderItem(Long orderId, Long itemId, Long userId, String userRole);
 }

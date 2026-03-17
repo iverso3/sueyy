@@ -38,7 +38,7 @@ public class Order {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
-    private OrderStatus status = OrderStatus.PENDING;
+    private OrderStatus status = OrderStatus.PLACED;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "payment_method")

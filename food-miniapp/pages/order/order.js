@@ -73,10 +73,8 @@ Page({
    */
   getStatusText(status) {
     const statusMap = {
-      'PENDING': '待付款',
-      'PROCESSING': '进行中',
-      'COMPLETED': '已完成',
-      'CANCELLED': '已取消'
+      'PLACED': '已下单',
+      'COMPLETED': '已制作完成'
     };
     return statusMap[status] || status;
   },
@@ -150,10 +148,18 @@ Page({
    * 按日期分组订单
    */
   groupOrdersByDate(orders) {
+    const app = getApp();
+    const isAdmin = app.globalData.userInfo && app.globalData.userInfo.role === 'ADMIN';
+
+    // 管理员模式：先按日期分组，再按用户分组
+    if (isAdmin) {
+      return this.groupOrdersByDateAndUser(orders);
+    }
+
+    // 普通用户模式：只按日期分组
     const groups = {};
 
     orders.forEach(order => {
-      // 解析订单创建时间
       const createdAt = order.createdAt;
       let dateKey = '';
 
@@ -163,7 +169,6 @@ Page({
         const yesterday = new Date(today);
         yesterday.setDate(yesterday.getDate() - 1);
 
-        // 判断是今天、昨天还是更早
         if (this.isSameDate(orderDate, today)) {
           dateKey = '今天';
         } else if (this.isSameDate(orderDate, yesterday)) {
@@ -181,14 +186,72 @@ Page({
       groups[dateKey].push(order);
     });
 
-    // 转换为数组并按日期排序（今天在前）
     const groupArray = Object.keys(groups).map(key => ({
       date: key,
       orders: groups[key],
-      expanded: true // 默认展开
+      expanded: true
     }));
 
-    // 排序：今天 > 昨天 > 其他
+    groupArray.sort((a, b) => {
+      if (a.date === '今天') return -1;
+      if (b.date === '今天') return 1;
+      if (a.date === '昨天') return -1;
+      if (b.date === '昨天') return 1;
+      return 0;
+    });
+
+    return groupArray;
+  },
+
+  /**
+   * 按日期和用户分组订单（管理员模式）
+   */
+  groupOrdersByDateAndUser(orders) {
+    const dateGroups = {};
+
+    orders.forEach(order => {
+      const createdAt = order.createdAt;
+      let dateKey = '';
+
+      if (createdAt) {
+        const orderDate = new Date(createdAt);
+        const today = new Date();
+        const yesterday = new Date(today);
+        yesterday.setDate(yesterday.getDate() - 1);
+
+        if (this.isSameDate(orderDate, today)) {
+          dateKey = '今天';
+        } else if (this.isSameDate(orderDate, yesterday)) {
+          dateKey = '昨天';
+        } else {
+          dateKey = this.formatDate(orderDate);
+        }
+      } else {
+        dateKey = '未知';
+      }
+
+      if (!dateGroups[dateKey]) {
+        dateGroups[dateKey] = {};
+      }
+
+      // 按用户分组
+      const userKey = order.userNickname || order.userId || '未知用户';
+      if (!dateGroups[dateKey][userKey]) {
+        dateGroups[dateKey][userKey] = [];
+      }
+      dateGroups[dateKey][userKey].push(order);
+    });
+
+    // 转换为数组结构
+    const groupArray = Object.keys(dateGroups).map(dateKey => ({
+      date: dateKey,
+      expanded: true,
+      userGroups: Object.keys(dateGroups[dateKey]).map(userKey => ({
+        userName: userKey,
+        orders: dateGroups[dateKey][userKey]
+      }))
+    }));
+
     groupArray.sort((a, b) => {
       if (a.date === '今天') return -1;
       if (b.date === '今天') return 1;

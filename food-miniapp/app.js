@@ -5,9 +5,9 @@ App({
     userInfo: null,
     userId: null, // 用户ID
     token: null,
-    tokenExpireTime: null, // token过期时间
-    apiBaseUrl: 'https://qmihmahoouke.cloud.sealos.io/api',
-    // apiBaseUrl: 'http://localhost:8080/api',
+    tokenExpiresTime: null, // token过期时间
+    // apiBaseUrl: 'https://qmihmahoouke.cloud.sealos.io/api',
+    apiBaseUrl: 'http://localhost:8080/api',
     // 本地测试时可使用模拟数据
     useMockData: false
   },

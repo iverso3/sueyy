@@ -3,6 +3,7 @@ package com.restaurant.ordering.controller.api;
 import com.restaurant.ordering.model.dto.request.CreateOrderRequest;
 import com.restaurant.ordering.model.dto.response.ApiResponse;
 import com.restaurant.ordering.model.dto.response.OrderResponse;
+import com.restaurant.ordering.model.enums.OrderStatus;
 import com.restaurant.ordering.service.OrderService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -78,5 +79,60 @@ public class OrderController {
             orders = orderService.getOrdersByUserId(userId);
         }
         return ApiResponse.success(orders);
+    }
+
+    /**
+     * 修改订单状态（仅管理员）
+     */
+    @PutMapping("/{orderId}/status")
+    public ApiResponse<OrderResponse> updateOrderStatus(
+            @RequestHeader(value = "X-User-Role", required = false) String userRole,
+            @PathVariable Long orderId,
+            @RequestBody Map<String, String> params) {
+
+        if (!"ADMIN".equals(userRole)) {
+            return ApiResponse.error("无权限操作");
+        }
+
+        String statusStr = params.get("status");
+        OrderStatus status = OrderStatus.valueOf(statusStr);
+
+        OrderResponse order = orderService.updateOrderStatus(orderId, status);
+        return ApiResponse.success(order);
+    }
+
+    /**
+     * 删除整个订单
+     */
+    @DeleteMapping("/{orderId}")
+    public ApiResponse<Void> deleteOrder(
+            @RequestHeader(value = "X-User-Id", required = false) Long userId,
+            @RequestHeader(value = "X-User-Role", required = false) String userRole,
+            @PathVariable Long orderId) {
+
+        if (userId == null) {
+            return ApiResponse.error("用户未登录");
+        }
+
+        orderService.deleteOrder(orderId, userId, userRole);
+        return ApiResponse.success(null);
+    }
+
+    /**
+     * 删除订单中的某个菜品
+     */
+    @DeleteMapping("/{orderId}/items/{itemId}")
+    public ApiResponse<OrderResponse> deleteOrderItem(
+            @RequestHeader(value = "X-User-Id", required = false) Long userId,
+            @RequestHeader(value = "X-User-Role", required = false) String userRole,
+            @PathVariable Long orderId,
+            @PathVariable Long itemId) {
+
+        if (userId == null) {
+            return ApiResponse.error("用户未登录");
+        }
+
+        OrderResponse order = orderService.deleteOrderItem(orderId, itemId, userId, userRole);
+        return ApiResponse.success(order);
     }
 }
