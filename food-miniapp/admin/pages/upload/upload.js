@@ -12,7 +12,6 @@ Page({
     tempFilePaths: [],      // 临时图片路径
     uploadResult: null,     // 上传结果
     uploading: false,       // 是否正在上传
-    baseUrl: 'http://localhost:8080/api'  // 后端API地址
   },
 
   /**
@@ -106,6 +105,7 @@ Page({
    * 上传图片
    */
   onUploadImage() {
+    const app = getApp();
     const { tempFilePaths, selectedItemId } = this.data;
 
     if (!selectedItemId) {
@@ -129,7 +129,7 @@ Page({
 
     // 先上传图片到服务器
     wx.uploadFile({
-      url: `${this.data.baseUrl}/upload/image`,
+      url: `${app.globalData.apiBaseUrl}/upload/image`,
       filePath: tempFilePath,
       name: 'file',
       formData: {},

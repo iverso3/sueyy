@@ -93,7 +93,7 @@
 
       <!-- 空状态 -->
       <view wx:if="{{orders.length === 0 && !loading}}" class="empty-order">
-        <image src="/images/empty-order.png" mode="aspectFit" />
+        <image src="/images/empty-cart.png" mode="aspectFit" />
         <text class="empty-text">暂无订单，快去下单吧</text>
         <view class="go-to-menu" bindtap="goToMenu">
           <text>去点餐</text>

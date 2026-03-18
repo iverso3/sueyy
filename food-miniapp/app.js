@@ -6,7 +6,7 @@ App({
     userId: null, // 用户ID
     token: null,
     tokenExpiresTime: null, // token过期时间
-    apiBaseUrl: 'https://qmihmahoouke.cloud.sealos.io/api',
+    apiBaseUrl: 'https://wuvhkxpiwyfu.sealosgzg.site/api',
     // apiBaseUrl: 'http://localhost:8080/api',
     // 本地测试时可使用模拟数据
     useMockData: false
