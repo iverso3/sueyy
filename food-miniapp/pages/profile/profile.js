@@ -59,7 +59,7 @@ Page({
    */
   goToUpload() {
     wx.navigateTo({
-      url: '/pages/upload/upload'
+      url: '/admin/pages/upload/upload'
     });
   },
 
@@ -68,7 +68,7 @@ Page({
    */
   goToMenuManagement() {
     wx.navigateTo({
-      url: '/pages/menu-management/menu-management'
+      url: '/admin/pages/menu-management/menu-management'
     });
   },
 
@@ -77,7 +77,7 @@ Page({
    */
   goToEditProfile() {
     wx.navigateTo({
-      url: '/pages/edit-profile/edit-profile'
+      url: '/subpages/pages/edit-profile/edit-profile'
     });
   },
 
@@ -100,14 +100,14 @@ Page({
           const app = getApp();
           app.logout().then(() => {
             wx.reLaunch({
-              url: '/pages/login/login'
+              url: '/subpages/pages/login/login'
             });
           }).catch(() => {
             // 即使后端失败也清除本地数据
             app.globalData.userInfo = null;
             app.globalData.token = null;
             wx.reLaunch({
-              url: '/pages/login/login'
+              url: '/subpages/pages/login/login'
             });
           });
         }

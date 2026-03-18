@@ -1,10 +1,11 @@
-/* pages/cart/cart.wxss */
+/* pages/cart/cart.wxss - 橙色主题 */
 .container {
   height: 100vh;
   display: flex;
   flex-direction: column;
-  background-color: #f8f8f8;
+  background: linear-gradient(180deg, #FFF7ED 0%, #FFEDD5 40%, #FEF3C7 100%);
   padding-bottom: 120rpx;
+  position: relative;
 }
 
 /* 购物车头部 */
@@ -12,9 +13,9 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 30rpx 30rpx 20rpx;
-  background-color: #ffffff;
-  border-bottom: 1rpx solid #f0f0f0;
+  padding: 30rpx 30rpx 24rpx;
+  background: linear-gradient(180deg, #FFFFFF 0%, #FFF7ED 100%);
+  border-bottom: 1rpx solid #FED7AA;
 }
 
 .header-left {
@@ -29,28 +30,28 @@
 }
 
 .checkbox {
-  width: 40rpx;
-  height: 40rpx;
-  border: 2rpx solid #ddd;
+  width: 44rpx;
+  height: 44rpx;
+  border: 3rpx solid #FDBA74;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-right: 10rpx;
+  margin-right: 12rpx;
   transition: all 0.2s ease;
 }
 
 .checkbox.checked {
-  background-color: #ff6b35;
-  border-color: #ff6b35;
+  background: linear-gradient(135deg, #F97316, #FB923C);
+  border-color: #F97316;
   position: relative;
 }
 
 .checkbox.checked::after {
   content: '';
   position: absolute;
-  width: 10rpx;
-  height: 18rpx;
+  width: 12rpx;
+  height: 20rpx;
   border: 3rpx solid #fff;
   border-top: none;
   border-left: none;
@@ -58,14 +59,14 @@
 }
 
 .select-all-text {
-  font-size: 26rpx;
-  color: #666;
+  font-size: 28rpx;
+  color: var(--text-secondary);
 }
 
 .cart-header .title {
-  font-size: 36rpx;
-  font-weight: 600;
-  color: #333;
+  font-size: 38rpx;
+  font-weight: 700;
+  color: var(--text-primary);
   flex: 1;
   text-align: center;
 }
@@ -79,38 +80,45 @@
   display: flex;
   align-items: center;
   margin-left: 30rpx;
-  font-size: 26rpx;
-  color: #666;
+  font-size: 28rpx;
+  color: var(--text-secondary);
 }
 
 .action-icon {
-  font-size: 32rpx;
-  margin-right: 6rpx;
-  color: #666;
+  font-size: 36rpx;
+  margin-right: 8rpx;
+  color: var(--text-secondary);
 }
 
 /* 购物车列表 */
 .cart-list {
   flex: 1;
   padding: 0 30rpx;
+  background-color: transparent;
 }
 
 .cart-item {
   display: flex;
   align-items: center;
-  padding: 25rpx 0;
-  background-color: #ffffff;
+  padding: 28rpx 0;
+  background-color: rgba(255, 255, 255, 0.95);
   border-radius: 20rpx;
-  margin-top: 20rpx;
-  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.08);
+  margin-top: 24rpx;
+  box-shadow: 0 4rpx 20rpx rgba(249, 115, 22, 0.1);
   position: relative;
+  transition: all 0.2s ease;
+}
+
+.cart-item:active {
+  transform: scale(0.99);
+  box-shadow: 0 2rpx 12rpx rgba(249, 115, 22, 0.08);
 }
 
 .item-image {
-  width: 160rpx;
-  height: 160rpx;
-  border-radius: 12rpx;
-  margin: 0 25rpx;
+  width: 170rpx;
+  height: 170rpx;
+  border-radius: 16rpx;
+  margin: 0 28rpx;
   flex-shrink: 0;
 }
 
@@ -121,27 +129,28 @@
 }
 
 .item-name {
-  font-size: 30rpx;
+  font-size: 32rpx;
   font-weight: 600;
-  color: #333;
-  margin-bottom: 10rpx;
+  color: var(--text-primary);
+  margin-bottom: 12rpx;
   line-height: 1.3;
 }
 
 .item-price {
   display: flex;
   align-items: center;
-  margin-bottom: 15rpx;
+  margin-bottom: 16rpx;
 }
 
 .current-price {
-  font-size: 32rpx;
+  font-size: 34rpx;
   font-weight: 700;
-  color: #ff6b35;
+  color: var(--primary-color);
   margin-right: 20rpx;
 }
 
 .subtotal {
+  display: none;
   font-size: 26rpx;
   color: #999;
 }
@@ -154,63 +163,72 @@
 }
 
 .quantity-btn {
-  width: 56rpx;
-  height: 56rpx;
+  width: 60rpx;
+  height: 60rpx;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 36rpx;
   font-weight: 500;
+  transition: all 0.2s ease;
 }
 
 .quantity-btn.minus {
-  background: linear-gradient(135deg, #f5f5f5, #e8e8e8);
-  color: #666;
-  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.1);
+  background: linear-gradient(135deg, #FEF3C7, #FDE68A);
+  color: #D97706;
+  box-shadow: 0 2rpx 8rpx rgba(217, 119, 6, 0.15);
 }
 
 .quantity-btn.plus {
-  background: linear-gradient(135deg, #ff6b35, #ff8c5a);
+  background: linear-gradient(135deg, #F97316, #FB923C);
   color: #fff;
-  box-shadow: 0 4rpx 12rpx rgba(255, 107, 53, 0.3);
+  box-shadow: 0 4rpx 16rpx rgba(249, 115, 22, 0.35);
+}
+
+.quantity-btn:active {
+  transform: scale(0.92);
 }
 
 .quantity {
   flex: 1;
   text-align: center;
-  font-size: 30rpx;
-  font-weight: 500;
-  color: #333;
+  font-size: 32rpx;
+  font-weight: 600;
+  color: var(--text-primary);
 }
 
 /* 删除按钮 */
 .delete-btn {
   position: absolute;
-  right: 25rpx;
+  right: 28rpx;
   top: 50%;
   transform: translateY(-50%);
-  width: 60rpx;
-  height: 60rpx;
+  width: 64rpx;
+  height: 64rpx;
   border-radius: 50%;
-  background-color: #ff4d4f;
+  background: linear-gradient(135deg, #FEE2E2, #FECACA);
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
 .delete-btn image {
-  width: 30rpx;
-  height: 30rpx;
+  width: 32rpx;
+  height: 32rpx;
 }
 
 /* 空购物车 */
 .empty-cart {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 100rpx 0;
   text-align: center;
 }
 
@@ -218,22 +236,29 @@
   width: 300rpx;
   height: 300rpx;
   margin-bottom: 40rpx;
-  opacity: 0.6;
 }
 
 .empty-text {
-  font-size: 32rpx;
-  color: #999;
+  font-size: 34rpx;
+  color: #92400E;
   margin-bottom: 50rpx;
+  font-weight: 500;
+  letter-spacing: 4rpx;
 }
 
 .go-to-menu {
-  padding: 20rpx 60rpx;
-  background: linear-gradient(135deg, #ff6b35, #ff8c5a);
+  padding: 24rpx 70rpx;
+  background: linear-gradient(135deg, #F97316, #FB923C);
   border-radius: 50rpx;
   color: #ffffff;
-  font-size: 28rpx;
-  font-weight: 500;
+  font-size: 30rpx;
+  font-weight: 600;
+  box-shadow: 0 8rpx 24rpx rgba(249, 115, 22, 0.4);
+  transition: all 0.2s ease;
+}
+
+.go-to-menu:active {
+  transform: scale(0.98);
 }
 
 /* 加载中 */
@@ -241,7 +266,7 @@
   text-align: center;
   padding: 60rpx;
   font-size: 28rpx;
-  color: #999;
+  color: #D97706;
 }
 
 /* 购物车底部 */
@@ -249,9 +274,9 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 25rpx 30rpx;
-  background-color: #ffffff;
-  border-top: 1rpx solid #f0f0f0;
+  padding: 28rpx 30rpx;
+  background: linear-gradient(180deg, #FFF7ED 0%, #FFFFFF 100%);
+  border-top: 1rpx solid #FED7AA;
 }
 
 .footer-left {
@@ -262,20 +287,20 @@
 
 .total-label {
   font-size: 28rpx;
-  color: #666;
-  margin-right: 15rpx;
+  color: #92400E;
+  margin-right: 16rpx;
 }
 
 .total-price {
-  font-size: 40rpx;
+  font-size: 44rpx;
   font-weight: 700;
-  color: #ff6b35;
-  margin-right: 20rpx;
+  color: var(--primary-color);
+  margin-right: 24rpx;
 }
 
 .total-quantity {
-  font-size: 24rpx;
-  color: #999;
+  font-size: 26rpx;
+  color: #D97706;
 }
 
 .footer-right {
@@ -283,22 +308,28 @@
 }
 
 .checkout-btn {
-  padding: 20rpx 60rpx;
-  background: linear-gradient(135deg, #ff6b35, #ff8c5a);
+  padding: 24rpx 64rpx;
+  background: linear-gradient(135deg, #F97316, #FB923C);
   border-radius: 50rpx;
   color: #ffffff;
-  font-size: 30rpx;
+  font-size: 32rpx;
   font-weight: 600;
   text-align: center;
-  min-width: 180rpx;
+  min-width: 200rpx;
+  box-shadow: 0 8rpx 24rpx rgba(249, 115, 22, 0.4);
+  transition: all 0.2s ease;
+}
+
+.checkout-btn:active {
+  transform: scale(0.98);
 }
 
 .checkout-btn.delete-mode {
-  background: linear-gradient(135deg, #ff4d4f, #ff7875);
+  background: linear-gradient(135deg, #EF4444, #F87171);
 }
 
 .checkout-btn.disabled {
-  background: linear-gradient(135deg, #ccc, #ddd);
+  background: linear-gradient(135deg, #CBD5E1, #E2E8F0);
 }
 
 /* 选中信息 */
@@ -308,21 +339,13 @@
 }
 
 .selected-count {
-  font-size: 26rpx;
-  color: #666;
-  margin-right: 20rpx;
+  font-size: 28rpx;
+  color: #92400E;
+  margin-right: 24rpx;
 }
 
 .selected-price {
-  font-size: 40rpx;
+  font-size: 44rpx;
   font-weight: 700;
-  color: #ff6b35;
-}
-
-/* 响应式调整 */
-@media (min-width: 768px) {
-  .container {
-    max-width: 750px;
-    margin: 0 auto;
-  }
+  color: var(--primary-color);
 }

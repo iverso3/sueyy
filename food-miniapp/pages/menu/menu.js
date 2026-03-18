@@ -477,7 +477,7 @@ Page({
    */
   goToWantList() {
     wx.navigateTo({
-      url: '/pages/cart/cart'
+      url: '/subpages/pages/cart/cart'
     });
   },
 
@@ -502,7 +502,7 @@ Page({
    */
   gotoUpload() {
     wx.navigateTo({
-      url: '/pages/upload/upload'
+      url: '/admin/pages/upload/upload'
     });
   },
 

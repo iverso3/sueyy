@@ -1,5 +1,5 @@
 <!--pages/cart/cart.wxml-->
-<view class="container">
+<view class="container {{cartItems.length === 0 && !loading ? 'container-empty' : ''}}">
   <!-- 想吃列表头部 -->
   <view class="cart-header">
     <view class="header-left">
@@ -38,7 +38,6 @@
         <text class="item-name">{{item.name}}</text>
         <view class="item-price">
           <text class="current-price">¥{{item.price}}</text>
-          <text class="subtotal">小计: ¥{{item.subtotal}}</text>
         </view>
 
         <!-- 数量调整 -->
@@ -55,20 +54,20 @@
       </view>
     </view>
 
-    <!-- 空想吃列表 -->
-    <view wx:if="{{cartItems.length === 0 && !loading}}" class="empty-cart">
-      <image src="/images/empty-cart.png" mode="aspectFit" />
-      <text class="empty-text">想吃列表空空如也</text>
-      <view class="go-to-menu" bindtap="goToMenu">
-        <text>去点餐</text>
-      </view>
-    </view>
-
     <!-- 加载中 -->
     <view wx:if="{{loading}}" class="loading">
       <text>加载中...</text>
     </view>
   </scroll-view>
+
+  <!-- 空想吃列表（放在scroll-view外部以实现居中） -->
+  <view wx:if="{{cartItems.length === 0 && !loading}}" class="empty-cart">
+    <image src="/images/empty-cart.png" mode="aspectFit" />
+    <text class="empty-text">想吃列表空空如也</text>
+    <view class="go-to-menu" bindtap="goToMenu">
+      <text>去点餐</text>
+    </view>
+  </view>
 
   <!-- 想吃列表底部 -->
   <view wx:if="{{cartItems.length > 0}}" class="cart-footer">

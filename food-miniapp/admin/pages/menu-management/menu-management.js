@@ -153,7 +153,7 @@ Page({
    */
   goToAddDish() {
     wx.navigateTo({
-      url: '/pages/dish-edit/dish-edit?type=add'
+      url: '/admin/pages/dish-edit/dish-edit?type=add'
     });
   },
 
@@ -163,7 +163,7 @@ Page({
   goToEditDish(e) {
     const id = e.currentTarget.dataset.id;
     wx.navigateTo({
-      url: `/pages/dish-edit/dish-edit?type=edit&id=${id}`
+      url: `/admin/pages/dish-edit/dish-edit?type=edit&id=${id}`
     });
   },
 
@@ -239,7 +239,7 @@ Page({
   onShareAppMessage() {
     return {
       title: '菜单管理',
-      path: '/pages/menu-management/menu-management'
+      path: '/admin/pages/menu-management/menu-management'
     };
   }
 });

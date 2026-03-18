@@ -49,7 +49,6 @@
             <view class="item-description">{{item.description}}</view>
             <view class="item-footer">
               <view class="item-price">
-                <text class="price-symbol">¥</text>
                 <text class="price-value">¥{{item.price}}</text>
               </view>
               <view class="add-btn" bindtap="addToCart" data-id="{{item.id}}">+</view>

@@ -129,7 +129,7 @@ Page({
   onShareAppMessage() {
     return {
       title: '在线点餐小程序',
-      path: '/pages/login/login'
+      path: '/subpages/pages/login/login'
     };
   }
 });

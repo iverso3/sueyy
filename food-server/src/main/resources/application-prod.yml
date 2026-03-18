@@ -48,6 +48,7 @@ management:
 
 file:
   base-url: https://qmihmahoouke.cloud.sealos.io/api
+  upload-dir: /app/uploads
 
 wechat:
   miniapp:

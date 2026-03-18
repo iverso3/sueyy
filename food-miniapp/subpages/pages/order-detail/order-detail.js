@@ -249,7 +249,7 @@ Page({
   onShareAppMessage() {
     return {
       title: '在线点餐 - 订单详情',
-      path: '/pages/order-detail/order-detail'
+      path: '/subpages/pages/order-detail/order-detail'
     };
   }
 });

@@ -307,7 +307,7 @@ Page({
   goToOrderDetail(e) {
     const orderId = e.currentTarget.dataset.id;
     wx.navigateTo({
-      url: `/pages/order-detail/order-detail?id=${orderId}`
+      url: `/subpages/pages/order-detail/order-detail?id=${orderId}`
     });
   }
 });

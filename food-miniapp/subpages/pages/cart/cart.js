@@ -388,7 +388,7 @@ Page({
         // 跳转到订单详情页
         setTimeout(() => {
           wx.navigateTo({
-            url: `/pages/order-detail/order-detail?id=${orderId}`
+            url: `/subpages/pages/order-detail/order-detail?id=${orderId}`
           });
         }, 1500);
       } else {
@@ -455,7 +455,7 @@ Page({
   onShareAppMessage() {
     return {
       title: '在线点餐 - 购物车',
-      path: '/pages/cart/cart'
+      path: '/subpages/pages/cart/cart'
     };
   }
 });

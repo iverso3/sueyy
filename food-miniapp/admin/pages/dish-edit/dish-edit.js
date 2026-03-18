@@ -353,7 +353,7 @@ Page({
   onShareAppMessage() {
     return {
       title: '菜品编辑',
-      path: '/pages/dish-edit/dish-edit'
+      path: '/admin/pages/dish-edit/dish-edit'
     };
   }
 });

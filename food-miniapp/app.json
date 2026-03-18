@@ -1,15 +1,27 @@
 {
   "pages": [
-    "pages/login/login",
     "pages/menu/menu",
-    "pages/cart/cart",
     "pages/order/order",
-    "pages/order-detail/order-detail",
-    "pages/upload/upload",
-    "pages/profile/profile",
-    "pages/menu-management/menu-management",
-    "pages/dish-edit/dish-edit",
-    "pages/edit-profile/edit-profile"
+    "pages/profile/profile"
+  ],
+  "subPackages": [
+    {
+      "root": "subpages",
+      "pages": [
+        "pages/login/login",
+        "pages/cart/cart",
+        "pages/order-detail/order-detail",
+        "pages/edit-profile/edit-profile"
+      ]
+    },
+    {
+      "root": "admin",
+      "pages": [
+        "pages/menu-management/menu-management",
+        "pages/dish-edit/dish-edit",
+        "pages/upload/upload"
+      ]
+    }
   ],
   "window": {
     "backgroundTextStyle": "light",

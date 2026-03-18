@@ -264,7 +264,7 @@ Page({
   onShareAppMessage() {
     return {
       title: '菜品图片上传',
-      path: '/pages/upload/upload'
+      path: '/admin/pages/upload/upload'
     };
   }
 });

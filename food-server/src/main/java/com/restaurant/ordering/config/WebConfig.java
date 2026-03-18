@@ -21,6 +21,10 @@ public class WebConfig implements WebMvcConfigurer {
         registry.addResourceHandler("/uploads/**")
                 .addResourceLocations("file:" + uploadPath);
 
+        // 添加 /api/uploads/** 映射（解决 baseUrl 包含 /api 时的访问问题）
+        registry.addResourceHandler("/api/uploads/**")
+                .addResourceLocations("file:" + uploadPath);
+
         // 如果上传目录在类路径下，也添加类路径映射
         registry.addResourceHandler("/static/**")
                 .addResourceLocations("classpath:/static/");
