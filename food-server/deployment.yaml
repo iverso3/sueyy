@@ -1,6 +1,20 @@
 # Sealos 部署配置 - 餐厅点餐系统后端
-# 使用方法: sealos run docker.io/iverso3/sueyy-food-server:latest
+# 使用方法: sealos apply -f deployment.yaml
 
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: restaurant-uploads-pvc
+  labels:
+    app: restaurant-ordering
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: local-path
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -22,6 +36,9 @@ spec:
           image: suyeenn/sueyy-food-server:latest
           ports:
             - containerPort: 8080
+          volumeMounts:
+            - name: uploads-storage
+              mountPath: /app/uploads
           env:
             - name: SPRING_PROFILES_ACTIVE
               value: "prod"
@@ -66,6 +83,10 @@ spec:
               port: 8080
             initialDelaySeconds: 30
             periodSeconds: 5
+      volumes:
+        - name: uploads-storage
+          persistentVolumeClaim:
+            claimName: restaurant-uploads-pvc
 ---
 apiVersion: v1
 kind: Service

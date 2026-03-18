@@ -80,8 +80,8 @@ Page({
 
     wx.showLoading({ title: '保存中...' });
 
-    // 如果有新头像，先上传
-    if (avatarUrl && avatarUrl.startsWith('wxfile://')) {
+    // 如果有新头像（微信临时文件或本地文件），先上传
+    if (avatarUrl && (avatarUrl.startsWith('wxfile://') || avatarUrl.startsWith('http://tmp/'))) {
       wx.uploadFile({
         url: `${app.globalData.apiBaseUrl}/upload/image`,
         filePath: avatarUrl,
