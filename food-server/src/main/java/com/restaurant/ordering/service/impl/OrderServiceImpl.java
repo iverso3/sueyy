@@ -180,6 +180,11 @@ public class OrderServiceImpl implements OrderService {
 
         // 删除订单项
         List<OrderItem> orderItems = orderItemRepository.findByOrder(order);
+        // 先删除关联的评价记录
+        for (OrderItem item : orderItems) {
+            dishReviewRepository.findByOrderItemId(item.getId())
+                    .ifPresent(dishReviewRepository::delete);
+        }
         orderItemRepository.deleteAll(orderItems);
 
         // 删除订单
@@ -224,6 +229,10 @@ public class OrderServiceImpl implements OrderService {
         BigDecimal subtotal = orderItem.getSubtotal();
         order.setTotalAmount(order.getTotalAmount().subtract(subtotal));
         order.setActualAmount(order.getActualAmount().subtract(subtotal));
+
+        // 先删除关联的评价记录
+        dishReviewRepository.findByOrderItemId(orderItem.getId())
+                .ifPresent(dishReviewRepository::delete);
 
         // 删除订单项
         orderItemRepository.delete(orderItem);

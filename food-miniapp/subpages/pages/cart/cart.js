@@ -30,13 +30,13 @@ Page({
     const currentHour = now.getHours();
     const currentMinute = now.getMinutes();
 
-    // 午餐时段: 11:00-13:00
-    const lunchStart = 11;
+    // 午餐时段: 07:00-13:00
+    const lunchStart = 7;
     const lunchEnd = 13;
 
-    // 晚餐时段: 17:00-19:00
+    // 晚餐时段: 17:00-20:00
     const dinnerStart = 17;
-    const dinnerEnd = 19;
+    const dinnerEnd = 20;
 
     // 生成30分钟时间段
     const addSlots = (startHour, endHour) => {

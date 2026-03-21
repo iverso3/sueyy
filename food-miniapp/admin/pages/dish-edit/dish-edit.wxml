@@ -33,6 +33,25 @@
       <textarea class="textarea" placeholder="请输入菜品描述" value="{{description}}" data-field="description" bindinput="onInput" maxlength="1000" auto-height />
     </view>
 
+    <!-- 菜品图片 -->
+    <view class="form-section">
+      <view class="section-title">菜品图片</view>
+      <view class="image-upload-section">
+        <view class="image-upload" bindtap="onChooseImage">
+          <image wx:if="{{tempFilePath || imageUrl}}" class="preview-image" src="{{tempFilePath || imageUrl}}" mode="aspectFill" />
+          <view wx:else class="upload-placeholder">
+            <text class="icon">+</text>
+            <text>添加图片</text>
+          </view>
+        </view>
+        <view wx:if="{{tempFilePath || imageUrl}}" class="image-actions">
+          <view class="image-action-btn" bindtap="previewImage">预览</view>
+          <view class="image-action-btn remove" bindtap="removeImage">删除</view>
+        </view>
+        <view class="field-hint">建议尺寸 750×750 像素，支持 JPG/PNG 格式</view>
+      </view>
+    </view>
+
     <!-- 是否在售 -->
     <view class="form-section switches">
       <view class="switch-item">

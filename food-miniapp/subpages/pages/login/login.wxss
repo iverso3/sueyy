@@ -142,39 +142,40 @@ page {
 
 .checkbox-wrapper {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: center;
+  gap: 14rpx;
 }
 
 .checkbox {
-  width: 40rpx;
-  height: 40rpx;
-  border: 3rpx solid #D1D5DB;
-  border-radius: 8rpx;
+  width: 36rpx;
+  height: 36rpx;
+  border: 2rpx solid #D1C4B7;
+  border-radius: 6rpx;
+  background: #fff;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  margin-right: 16rpx;
-  margin-top: 4rpx;
   transition: all 0.2s ease;
 }
 
 .checkbox.checked {
-  background: linear-gradient(135deg, #F97316, #FB923C);
+  background: #F97316;
   border-color: #F97316;
 }
 
 .checkbox-icon {
   color: #FFFFFF;
-  font-size: 24rpx;
+  font-size: 22rpx;
   font-weight: 700;
+  line-height: 1;
 }
 
 .agreement-text {
-  font-size: 24rpx;
-  color: #6B7280;
-  line-height: 1.5;
+  font-size: 26rpx;
+  color: #7A6555;
+  line-height: 36rpx;
 }
 
 .agreement-text .link {

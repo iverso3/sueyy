@@ -20,30 +20,14 @@
 
     <!-- 登录卡片 -->
     <view class="login-card">
-      <!-- 协议勾选框 -->
-      <view class="agreement-check">
-        <view class="checkbox-wrapper" bindtap="toggleAgreement">
-          <view class="checkbox {{isAgreed ? 'checked' : ''}}">
-            <text wx:if="{{isAgreed}}" class="checkbox-icon">✓</text>
-          </view>
-          <text class="agreement-text">
-            我已阅读并同意 <text class="link" catchtap="showUserAgreement">《用户协议》</text> 和 <text class="link" catchtap="showPrivacyPolicy">《隐私政策》</text>
-          </text>
-        </view>
-      </view>
-
       <button
-        class="btn-login {{isAgreed ? '' : 'btn-disabled'}}"
+        class="btn-login"
         bindtap="handleWeChatLogin"
         loading="{{isLoading}}"
-        disabled="{{isLoading || !isAgreed}}"
+        disabled="{{isLoading}}"
       >
         <text class="btn-text">微信一键登录</text>
       </button>
-
-      <view class="agreement-hint" wx:if="{{!isAgreed}}">
-        请先阅读并同意用户协议和隐私政策
-      </view>
     </view>
 
     <!-- 特色展示 -->
