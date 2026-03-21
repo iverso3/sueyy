@@ -134,6 +134,18 @@
   flex: 1;
 }
 
+.item-spec {
+  margin-bottom: 10rpx;
+}
+
+.spec-text {
+  font-size: 24rpx;
+  color: #f97316;
+  background-color: #fff7ed;
+  padding: 4rpx 12rpx;
+  border-radius: 6rpx;
+}
+
 .item-price {
   display: flex;
   justify-content: space-between;

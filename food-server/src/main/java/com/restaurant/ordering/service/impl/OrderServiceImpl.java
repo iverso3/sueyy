@@ -92,6 +92,11 @@ public class OrderServiceImpl implements OrderService {
             orderItem.setMenuItemPrice(cartItem.getPrice());
             orderItem.setQuantity(cartItem.getQuantity());
             orderItem.setSubtotal(cartItem.getSubtotal());
+            // 复制规格信息
+            if (cartItem.getSpecification() != null) {
+                orderItem.setSpecificationName(cartItem.getSpecification().getName());
+                orderItem.setSpecificationPriceAdjustment(cartItem.getSpecification().getPriceAdjustment());
+            }
             orderItemRepository.save(orderItem);
         }
 
@@ -333,6 +338,7 @@ public class OrderServiceImpl implements OrderService {
         response.setPrice(orderItem.getMenuItemPrice());
         response.setQuantity(orderItem.getQuantity());
         response.setSubtotal(orderItem.getSubtotal());
+        response.setSpecificationName(orderItem.getSpecificationName());
 
         // 获取评价信息
         dishReviewRepository.findByOrderItemId(orderItem.getId()).ifPresent(review -> {

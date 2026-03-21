@@ -50,6 +50,9 @@
               <text>删除</text>
             </view>
           </view>
+          <view wx:if="{{item.specificationName}}" class="item-spec">
+            <text class="spec-text">{{item.specificationName}}</text>
+          </view>
           <view class="item-price">
             <text class="price">¥{{item.price}} × {{item.quantity}}</text>
             <text class="subtotal">¥{{item.subtotal}}</text>
