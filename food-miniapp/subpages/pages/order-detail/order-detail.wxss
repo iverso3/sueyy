@@ -165,6 +165,23 @@
   color: #ffffff;
 }
 
+/* 菜品评价显示 */
+.item-review {
+  margin-top: 10rpx;
+  padding: 10rpx 0;
+}
+
+.review-stars {
+  font-size: 24rpx;
+  color: #f97316;
+  margin-right: 10rpx;
+}
+
+.review-comment {
+  font-size: 24rpx;
+  color: #666;
+}
+
 /* 订单金额 */
 .order-amount {
   background-color: #ffffff;
@@ -294,4 +311,147 @@
     max-width: 750px;
     margin: 0 auto;
   }
+}
+
+/* 评价弹窗 */
+.review-mask {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.review-container {
+  width: 100%;
+  max-height: 80vh;
+  background: #ffffff;
+  border-radius: 32rpx 32rpx 0 0;
+  padding-bottom: env(safe-area-inset-bottom);
+  overflow-y: auto;
+}
+
+.review-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 40rpx;
+  border-bottom: 1rpx solid #F3F4F6;
+  position: sticky;
+  top: 0;
+  background: #fff;
+}
+
+.review-title {
+  font-size: 36rpx;
+  font-weight: 700;
+  color: #1F2937;
+}
+
+.review-close {
+  font-size: 48rpx;
+  color: #9CA3AF;
+  padding: 10rpx;
+}
+
+.review-items {
+  padding: 30rpx 40rpx;
+}
+
+.review-item {
+  display: flex;
+  padding: 24rpx 0;
+  border-bottom: 1rpx solid #F3F4F6;
+}
+
+.review-item:last-child {
+  border-bottom: none;
+}
+
+.review-item-image {
+  width: 120rpx;
+  height: 120rpx;
+  border-radius: 12rpx;
+  margin-right: 24rpx;
+  flex-shrink: 0;
+}
+
+.review-item-info {
+  flex: 1;
+}
+
+.review-item-name {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #1F2937;
+  margin-bottom: 16rpx;
+}
+
+.rating-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 16rpx;
+}
+
+.rating-stars {
+  display: flex;
+  gap: 8rpx;
+}
+
+.star {
+  font-size: 40rpx;
+  color: #D1D5DB;
+  transition: all 0.2s ease;
+}
+
+.star.active {
+  color: #F97316;
+}
+
+.rating-text {
+  font-size: 26rpx;
+  color: #6B7280;
+  margin-left: 16rpx;
+}
+
+.review-input {
+  width: 100%;
+  height: 80rpx;
+  background: #F3F4F6;
+  border-radius: 12rpx;
+  padding: 0 20rpx;
+  font-size: 28rpx;
+}
+
+.review-footer {
+  padding: 24rpx 40rpx 40rpx;
+}
+
+.submit-review-btn {
+  width: 100%;
+  height: 96rpx;
+  background: linear-gradient(135deg, #F97316, #FB923C);
+  border-radius: 48rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #ffffff;
+  box-shadow: 0 8rpx 24rpx rgba(249, 115, 22, 0.4);
+}
+
+.review-order-btn {
+  padding: 25rpx 40rpx;
+  background: linear-gradient(135deg, #10B981, #34D399);
+  border-radius: 50rpx;
+  color: #ffffff;
+  font-size: 30rpx;
+  font-weight: 600;
+  margin-right: 20rpx;
 }

@@ -13,7 +13,132 @@ Page({
     // 勾选功能
     selectedCount: 0,     // 选中数量
     selectedPrice: 0,     // 选中金额
-    selectAll: true       // 是否全选（默认全选）
+    selectAll: true,      // 是否全选（默认全选）
+    // 取餐时间选择
+    showTimePicker: false,
+    timeSlots: [],
+    selectedTimeIndex: 0,
+    selectedTime: ''
+  },
+
+  /**
+   * 生成取餐时间段
+   */
+  generateTimeSlots() {
+    const slots = [];
+    const now = new Date();
+    const currentHour = now.getHours();
+    const currentMinute = now.getMinutes();
+
+    // 午餐时段: 11:00-13:00
+    const lunchStart = 11;
+    const lunchEnd = 13;
+
+    // 晚餐时段: 17:00-19:00
+    const dinnerStart = 17;
+    const dinnerEnd = 19;
+
+    // 生成30分钟时间段
+    const addSlots = (startHour, endHour) => {
+      for (let hour = startHour; hour < endHour; hour++) {
+        for (let minute = 0; minute < 60; minute += 30) {
+          const timeStr = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
+          const label = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
+          // 判断是否已过该时间段
+          const isPast = hour < currentHour || (hour === currentHour && minute <= currentMinute);
+          slots.push({
+            value: timeStr,
+            label: label,
+            disabled: isPast
+          });
+        }
+      }
+    };
+
+    // 根据当前时间添加可用时段
+    if (currentHour < lunchEnd) {
+      addSlots(Math.max(lunchStart, currentHour), lunchEnd);
+    }
+    if (currentHour < dinnerEnd) {
+      addSlots(Math.max(dinnerStart, currentHour > lunchEnd ? currentHour : dinnerStart), dinnerEnd);
+    }
+
+    // 如果没有可用时段，添加默认时段
+    if (slots.length === 0) {
+      slots.push(
+        { value: '11:30', label: '11:30', disabled: false },
+        { value: '12:00', label: '12:00', disabled: false },
+        { value: '12:30', label: '12:30', disabled: false },
+        { value: '17:30', label: '17:30', disabled: false },
+        { value: '18:00', label: '18:00', disabled: false },
+        { value: '18:30', label: '18:30', disabled: false }
+      );
+    }
+
+    // 设置默认选择第一个可用时段
+    const firstAvailable = slots.findIndex(s => !s.disabled);
+    const defaultIndex = firstAvailable >= 0 ? firstAvailable : 0;
+    const defaultTime = slots[defaultIndex] ? slots[defaultIndex].value : '12:00';
+
+    return {
+      slots,
+      defaultIndex,
+      defaultTime
+    };
+  },
+
+  /**
+   * 显示取餐时间选择器
+   */
+  showPickupTimePicker() {
+    const { slots, defaultIndex, defaultTime } = this.generateTimeSlots();
+    this.setData({
+      showTimePicker: true,
+      timeSlots: slots,
+      selectedTimeIndex: defaultIndex,
+      selectedTime: defaultTime
+    });
+  },
+
+  /**
+   * 隐藏取餐时间选择器
+   */
+  hidePickupTimePicker() {
+    this.setData({
+      showTimePicker: false
+    });
+  },
+
+  /**
+   * 选择取餐时间
+   */
+  onTimeSelect(e) {
+    const index = e.detail.value;
+    const selectedSlot = this.data.timeSlots[index];
+    if (selectedSlot && !selectedSlot.disabled) {
+      this.setData({
+        selectedTimeIndex: index,
+        selectedTime: selectedSlot.value
+      });
+    }
+  },
+
+  /**
+   * 确认取餐时间
+   */
+  confirmPickupTime() {
+    this.setData({
+      showTimePicker: false
+    });
+    // 确认后继续下单流程
+    this.submitOrder();
+  },
+
+  /**
+   * 防止冒泡
+   */
+  preventBubble() {
+    // 空方法，防止冒泡
   },
 
   /**
@@ -337,15 +462,8 @@ Page({
       return;
     }
 
-    wx.showModal({
-      title: '确认下单',
-      content: `已选${this.data.selectedCount}个菜品，共¥${this.data.selectedPrice}，是否确认下单？`,
-      success: (res) => {
-        if (res.confirm) {
-          this.submitOrder();
-        }
-      }
-    });
+    // 先显示取餐时间选择器
+    this.showPickupTimePicker();
   },
 
   /**
@@ -367,12 +485,19 @@ Page({
 
     wx.showLoading({ title: '提交中...' });
 
+    // 获取今天日期
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = (today.getMonth() + 1).toString().padStart(2, '0');
+    const day = today.getDate().toString().padStart(2, '0');
+    const pickupDateTime = `${year}-${month}-${day} ${this.data.selectedTime}:00`;
+
     app.apiRequest({
       url: '/orders',
       method: 'POST',
       data: {
         itemIds: selectedIds,
-        deliveryTime: '尽快送达',
+        pickupTime: pickupDateTime,
         remark: ''
       }
     }).then(response => {

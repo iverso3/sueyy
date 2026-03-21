@@ -17,7 +17,153 @@ Page({
     isSearching: false,
     userInfo: null,  // 用户信息
     showUserMenu: false,  // 是否显示用户菜单
-    wantCount: 0  // 想吃数量
+    wantCount: 0,  // 想吃数量
+    // 规格选择弹窗
+    showSpecPicker: false,
+    specMenuItem: null,
+    specifications: [],
+    selectedSpecIndex: 0
+  },
+
+  /**
+   * 显示规格选择弹窗
+   */
+  showSpecPicker(e) {
+    const menuItemId = e.currentTarget.dataset.id;
+    const menuItem = this.findMenuItemById(menuItemId);
+
+    if (!menuItem) return;
+
+    // 检查是否有规格
+    const specs = menuItem.specifications || [];
+    if (specs.length === 0) {
+      // 没有规格，直接加入购物车
+      this.addToCartDirect(menuItemId);
+      return;
+    }
+
+    // 找到默认选中的规格
+    let defaultIndex = specs.findIndex(s => s.isDefault);
+    if (defaultIndex < 0) defaultIndex = 0;
+
+    this.setData({
+      showSpecPicker: true,
+      specMenuItem: menuItem,
+      specifications: specs,
+      selectedSpecIndex: defaultIndex
+    });
+  },
+
+  /**
+   * 根据ID查找菜品
+   */
+  findMenuItemById(id) {
+    // 先从featuredItems查找
+    let item = this.data.featuredItems.find(i => i.id === id);
+    if (item) return item;
+    // 再从menuItems查找
+    return this.data.menuItems.find(i => i.id === id);
+  },
+
+  /**
+   * 选择规格
+   */
+  onSpecSelect(e) {
+    const index = e.detail.value;
+    this.setData({
+      selectedSpecIndex: index
+    });
+  },
+
+  /**
+   * 点击选择规格
+   */
+  onSpecSelectByTap(e) {
+    const index = e.currentTarget.dataset.index;
+    this.setData({
+      selectedSpecIndex: index
+    });
+  },
+
+  /**
+   * 防止冒泡
+   */
+  preventBubble() {
+    // 空方法，防止冒泡
+  },
+
+  /**
+   * 确认规格并加入购物车
+   */
+  confirmSpecAndAdd() {
+    const { specMenuItem, specifications, selectedSpecIndex } = this.data;
+    if (!specMenuItem || specifications.length === 0) return;
+
+    const selectedSpec = specifications[selectedSpecIndex];
+    const specificationId = selectedSpec ? selectedSpec.id : null;
+
+    this.setData({
+      showSpecPicker: false
+    });
+
+    // 调用加入购物车API
+    this.addToCartWithSpec(specMenuItem.id, specificationId);
+  },
+
+  /**
+   * 确认规格并直接下单
+   */
+  /**
+   * 隐藏规格选择弹窗
+   */
+  hideSpecPicker() {
+    this.setData({
+      showSpecPicker: false
+    });
+  },
+
+  /**
+   * 直接加入购物车（无规格）
+   */
+  addToCartDirect(menuItemId) {
+    this.addToCartWithSpec(menuItemId, null);
+  },
+
+  /**
+   * 快速购买（直接下单）
+   */
+  /**
+   * 带规格加入购物车
+   */
+  addToCartWithSpec(menuItemId, specificationId) {
+    const app = getApp();
+    const data = {
+      menuItemId: menuItemId,
+      quantity: 1
+    };
+    if (specificationId) {
+      data.specificationId = specificationId;
+    }
+
+    app.apiRequest({
+      url: '/cart/items',
+      method: 'POST',
+      data: data
+    }).then(response => {
+      if (response.code === 200) {
+        wx.showToast({
+          title: '已加入想吃',
+          icon: 'success'
+        });
+        this.getWantCount();
+      }
+    }).catch(error => {
+      console.error('添加到想吃失败:', error);
+      wx.showToast({
+        title: '添加失败，请重试',
+        icon: 'none'
+      });
+    });
   },
 
   /**
@@ -425,32 +571,8 @@ Page({
    */
   addToCart(e) {
     const menuItemId = e.currentTarget.dataset.id;
-    const app = getApp();
-
-    app.apiRequest({
-      url: '/cart/items',
-      method: 'POST',
-      data: {
-        menuItemId: menuItemId,
-        quantity: 1
-      }
-    }).then(response => {
-      if (response.code === 200) {
-        wx.showToast({
-          title: '已加入想吃',
-          icon: 'success'
-        });
-
-        // 更新想吃数量
-        this.getWantCount();
-      }
-    }).catch(error => {
-      console.error('添加到想吃失败:', error);
-      wx.showToast({
-        title: '添加失败，请重试',
-        icon: 'none'
-      });
-    });
+    // 先检查是否有规格，弹出规格选择
+    this.showSpecPicker(e);
   },
 
   /**

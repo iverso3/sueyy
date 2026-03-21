@@ -51,7 +51,9 @@
               <view class="item-price">
                 <text class="price-value">¥{{item.price}}</text>
               </view>
-              <view class="add-btn" bindtap="addToCart" data-id="{{item.id}}">+</view>
+              <view class="item-actions">
+                <view class="add-btn" bindtap="addToCart" data-id="{{item.id}}">+</view>
+              </view>
             </view>
           </view>
         </view>
@@ -75,5 +77,47 @@
   <view wx:if="{{wantCount > 0}}" class="float-cart" bindtap="goToWantList">
     <image class="cart-icon-img" src="/images/icon/cart-add.png" mode="aspectFit" />
     <view class="cart-badge">{{wantCount}}</view>
+  </view>
+
+  <!-- 规格选择弹窗 -->
+  <view wx:if="{{showSpecPicker}}" class="spec-picker-mask" bindtap="hideSpecPicker">
+    <view class="spec-picker-box" catchtap="preventBubble">
+      <!-- 拖动指示条 -->
+      <view class="spec-picker-handle"></view>
+
+      <!-- 关闭按钮 -->
+      <view class="spec-picker-close-btn" bindtap="hideSpecPicker">✕</view>
+
+      <!-- 头部：菜品图片 + 价格 -->
+      <view class="spec-picker-top">
+        <image class="spec-picker-img" src="{{specMenuItem.imageUrl}}" mode="aspectFill" />
+        <view class="spec-picker-info">
+          <text class="spec-picker-name">{{specMenuItem.name}}</text>
+          <text class="spec-picker-price">¥{{specMenuItem.price}}</text>
+        </view>
+      </view>
+
+      <!-- 规格选择区 -->
+      <view class="spec-picker-section">
+        <text class="spec-section-title">规格</text>
+        <view class="spec-list">
+          <view
+            wx:for="{{specifications}}"
+            wx:key="id"
+            class="spec-item {{selectedSpecIndex === index ? 'spec-item-active' : ''}}"
+            bindtap="onSpecSelectByTap"
+            data-index="{{index}}"
+          >
+            <text class="spec-item-name">{{item.name}}</text>
+            <text wx:if="{{item.priceAdjustment > 0}}" class="spec-item-price">+¥{{item.priceAdjustment}}</text>
+          </view>
+        </view>
+      </view>
+
+      <!-- 底部按钮 -->
+      <view class="spec-picker-btns">
+        <view class="spec-btn" bindtap="confirmSpecAndAdd">加入想吃</view>
+      </view>
+    </view>
   </view>
 </view>

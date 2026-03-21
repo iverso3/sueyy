@@ -87,3 +87,45 @@
     </view>
   </view>
 </view>
+
+<!-- 取餐时间选择弹窗 -->
+<view wx:if="{{showTimePicker}}" class="time-picker-mask" bindtap="hidePickupTimePicker">
+  <view class="time-picker-container" catchtap="preventBubble">
+    <view class="time-picker-header">
+      <text class="time-picker-title">选择取餐时间</text>
+      <text class="time-picker-subtitle">请选择您期望的取餐时间</text>
+    </view>
+
+    <view class="time-picker-content">
+      <view class="selected-time-display">
+        <text class="selected-time-label">取餐时间</text>
+        <text class="selected-time-value">{{selectedTime}}</text>
+      </view>
+
+      <picker-view
+        class="time-picker-view"
+        value="{{selectedTimeIndex}}"
+        bindchange="onTimeSelect"
+      >
+        <picker-view-column>
+          <view
+            wx:for="{{timeSlots}}"
+            wx:key="index"
+            class="time-slot-item {{item.disabled ? 'disabled' : ''}}"
+          >
+            {{item.label}}
+          </view>
+        </picker-view-column>
+      </picker-view>
+    </view>
+
+    <view class="time-picker-footer">
+      <view class="cancel-btn" bindtap="hidePickupTimePicker">
+        <text>取消</text>
+      </view>
+      <view class="confirm-btn" bindtap="confirmPickupTime">
+        <text>确认下单</text>
+      </view>
+    </view>
+  </view>
+</view>

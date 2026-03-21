@@ -349,3 +349,137 @@
   font-weight: 700;
   color: var(--primary-color);
 }
+
+/* 取餐时间选择弹窗 */
+.time-picker-mask {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.time-picker-container {
+  width: 100%;
+  background: #ffffff;
+  border-radius: 32rpx 32rpx 0 0;
+  padding-bottom: env(safe-area-inset-bottom);
+  animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+.time-picker-header {
+  padding: 40rpx 40rpx 24rpx;
+  text-align: center;
+  border-bottom: 1rpx solid #F3F4F6;
+}
+
+.time-picker-title {
+  display: block;
+  font-size: 36rpx;
+  font-weight: 700;
+  color: #1F2937;
+  margin-bottom: 12rpx;
+}
+
+.time-picker-subtitle {
+  display: block;
+  font-size: 26rpx;
+  color: #6B7280;
+}
+
+.time-picker-content {
+  padding: 32rpx 40rpx;
+}
+
+.selected-time-display {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24rpx 32rpx;
+  background: linear-gradient(135deg, #F97316, #FB923C);
+  border-radius: 16rpx;
+  margin-bottom: 32rpx;
+}
+
+.selected-time-label {
+  font-size: 28rpx;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.selected-time-value {
+  font-size: 44rpx;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.time-picker-view {
+  height: 360rpx;
+  background: #F9FAFB;
+  border-radius: 16rpx;
+}
+
+.time-slot-item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 90rpx;
+  font-size: 32rpx;
+  color: #1F2937;
+}
+
+.time-slot-item.disabled {
+  color: #9CA3AF;
+}
+
+.time-picker-footer {
+  display: flex;
+  padding: 24rpx 40rpx 40rpx;
+  gap: 24rpx;
+}
+
+.cancel-btn {
+  flex: 1;
+  height: 96rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #F3F4F6;
+  border-radius: 48rpx;
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #6B7280;
+}
+
+.confirm-btn {
+  flex: 2;
+  height: 96rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #F97316, #FB923C);
+  border-radius: 48rpx;
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #ffffff;
+  box-shadow: 0 8rpx 24rpx rgba(249, 115, 22, 0.4);
+}

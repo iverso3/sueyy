@@ -135,17 +135,64 @@ page {
   letter-spacing: 2rpx;
 }
 
-/* 协议 */
-.agreement {
-  text-align: center;
-  margin-top: 28rpx;
-  font-size: 22rpx;
-  color: #92400E;
+/* 协议勾选框 */
+.agreement-check {
+  margin-bottom: 32rpx;
 }
 
-.link {
+.checkbox-wrapper {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+.checkbox {
+  width: 40rpx;
+  height: 40rpx;
+  border: 3rpx solid #D1D5DB;
+  border-radius: 8rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-right: 16rpx;
+  margin-top: 4rpx;
+  transition: all 0.2s ease;
+}
+
+.checkbox.checked {
+  background: linear-gradient(135deg, #F97316, #FB923C);
+  border-color: #F97316;
+}
+
+.checkbox-icon {
+  color: #FFFFFF;
+  font-size: 24rpx;
+  font-weight: 700;
+}
+
+.agreement-text {
+  font-size: 24rpx;
+  color: #6B7280;
+  line-height: 1.5;
+}
+
+.agreement-text .link {
   color: #EA580C;
   font-weight: 500;
+}
+
+/* 登录按钮禁用状态 */
+.btn-login.btn-disabled {
+  background: linear-gradient(135deg, #9CA3AF 0%, #D1D5DB 100%);
+  box-shadow: none;
+}
+
+.agreement-hint {
+  text-align: center;
+  margin-top: 16rpx;
+  font-size: 22rpx;
+  color: #EF4444;
 }
 
 /* 特色展示 */
