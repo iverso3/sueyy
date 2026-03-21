@@ -3,10 +3,12 @@ package com.restaurant.ordering.service.impl;
 import com.restaurant.ordering.exception.BusinessException;
 import com.restaurant.ordering.exception.ErrorCode;
 import com.restaurant.ordering.model.dto.request.MenuItemRequest;
+import com.restaurant.ordering.model.dto.response.DishSpecificationResponse;
 import com.restaurant.ordering.model.dto.response.MenuItemResponse;
 import com.restaurant.ordering.model.entity.Category;
 import com.restaurant.ordering.model.entity.MenuItem;
 import com.restaurant.ordering.repository.CategoryRepository;
+import com.restaurant.ordering.repository.DishSpecificationRepository;
 import com.restaurant.ordering.repository.MenuItemRepository;
 import com.restaurant.ordering.service.MenuService;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +27,7 @@ public class MenuServiceImpl implements MenuService {
 
     private final CategoryRepository categoryRepository;
     private final MenuItemRepository menuItemRepository;
+    private final DishSpecificationRepository dishSpecificationRepository;
 
     @Override
     @Cacheable(value = "categories", key = "'allActive'")
@@ -124,6 +127,22 @@ public class MenuServiceImpl implements MenuService {
         response.setIsActive(menuItem.getIsActive());
         response.setCategoryId(menuItem.getCategory().getId());
         response.setCategoryName(menuItem.getCategory().getName());
+
+        // 获取菜品规格
+        List<DishSpecificationResponse> specifications = dishSpecificationRepository
+                .findByMenuItemIdOrderBySortOrderAsc(menuItem.getId())
+                .stream()
+                .map(spec -> {
+                    DishSpecificationResponse specResponse = new DishSpecificationResponse();
+                    specResponse.setId(spec.getId());
+                    specResponse.setName(spec.getName());
+                    specResponse.setPriceAdjustment(spec.getPriceAdjustment());
+                    specResponse.setIsDefault(spec.getIsDefault());
+                    return specResponse;
+                })
+                .collect(Collectors.toList());
+        response.setSpecifications(specifications);
+
         return response;
     }
 

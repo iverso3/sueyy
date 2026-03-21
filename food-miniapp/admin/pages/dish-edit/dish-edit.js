@@ -28,6 +28,18 @@ Page({
     // 图片相关
     tempFilePath: '',
 
+    // 规格管理
+    specifications: [],
+    showSpecModal: false,
+    editingSpecId: null,
+    specSubmitting: false,
+    specForm: {
+      name: '',
+      priceAdjustment: '',
+      sortOrder: '0',
+      isDefault: false
+    },
+
     // 状态
     loading: false,
     submitting: false
@@ -115,7 +127,8 @@ Page({
           isRecommended: dish.isRecommended || false,
           isHot: dish.isHot || false,
           sortOrder: dish.sortOrder || 0,
-          isActive: dish.isActive !== false
+          isActive: dish.isActive !== false,
+          specifications: dish.specifications || []
         });
       } else {
         wx.showToast({
@@ -161,6 +174,217 @@ Page({
     const { field } = e.currentTarget.dataset;
     const value = e.detail.value;
     this.setData({ [field]: value });
+  },
+
+  // ========== 规格管理 ==========
+
+  /**
+   * 显示规格弹窗
+   */
+  showSpecModal() {
+    this.setData({
+      showSpecModal: true,
+      editingSpecId: null,
+      specForm: {
+        name: '',
+        priceAdjustment: '',
+        sortOrder: '0',
+        isDefault: false
+      }
+    });
+  },
+
+  /**
+   * 隐藏规格弹窗
+   */
+  hideSpecModal() {
+    this.setData({
+      showSpecModal: false,
+      editingSpecId: null
+    });
+  },
+
+  /**
+   * 防止冒泡
+   */
+  preventBubble() {
+    // 空方法
+  },
+
+  /**
+   * 规格输入框绑定
+   */
+  onSpecInput(e) {
+    const { field } = e.currentTarget.dataset;
+    const value = e.detail.value;
+    this.setData({
+      [`specForm.${field}`]: value
+    });
+  },
+
+  /**
+   * 规格开关绑定
+   */
+  onSpecSwitchChange(e) {
+    const { field } = e.currentTarget.dataset;
+    const value = e.detail.value;
+    this.setData({
+      [`specForm.${field}`]: value
+    });
+  },
+
+  /**
+   * 编辑规格
+   */
+  editSpecification(e) {
+    const specId = e.currentTarget.dataset.id;
+    const spec = this.data.specifications.find(s => s.id === specId);
+    if (!spec) return;
+
+    this.setData({
+      showSpecModal: true,
+      editingSpecId: specId,
+      specForm: {
+        name: spec.name || '',
+        priceAdjustment: spec.priceAdjustment ? String(spec.priceAdjustment) : '',
+        sortOrder: spec.sortOrder !== undefined ? String(spec.sortOrder) : '0',
+        isDefault: spec.isDefault || false
+      }
+    });
+  },
+
+  /**
+   * 删除规格
+   */
+  deleteSpecification(e) {
+    const specId = e.currentTarget.dataset.id;
+
+    wx.showModal({
+      title: '确认删除',
+      content: '确定要删除这个规格吗？',
+      success: (res) => {
+        if (res.confirm) {
+          this.doDeleteSpecification(specId);
+        }
+      }
+    });
+  },
+
+  doDeleteSpecification(specId) {
+    const app = getApp();
+
+    app.apiRequest({
+      url: `/menu/specifications/${specId}`,
+      method: 'DELETE'
+    }).then(response => {
+      if (response.code === 200) {
+        wx.showToast({
+          title: '删除成功',
+          icon: 'success'
+        });
+        // 刷新规格列表
+        this.loadSpecifications();
+      } else {
+        wx.showToast({
+          title: response.message || '删除失败',
+          icon: 'none'
+        });
+      }
+    }).catch(error => {
+      console.error('删除规格失败:', error);
+      wx.showToast({
+        title: '删除失败',
+        icon: 'none'
+      });
+    });
+  },
+
+  /**
+   * 加载规格列表
+   */
+  loadSpecifications() {
+    const { dishId } = this.data;
+    if (!dishId) return;
+
+    const app = getApp();
+
+    app.apiRequest({
+      url: `/menu/items/${dishId}/specifications`,
+      method: 'GET'
+    }).then(response => {
+      if (response.code === 200) {
+        this.setData({
+          specifications: response.data || []
+        });
+      }
+    }).catch(error => {
+      console.error('加载规格失败:', error);
+    });
+  },
+
+  /**
+   * 保存规格
+   */
+  saveSpecification() {
+    const { specForm, dishId, editingSpecId } = this.data;
+
+    // 验证
+    if (!specForm.name || !specForm.name.trim()) {
+      wx.showToast({
+        title: '请输入规格名称',
+        icon: 'none'
+      });
+      return;
+    }
+
+    this.setData({ specSubmitting: true });
+
+    const app = getApp();
+    const requestData = {
+      menuItemId: dishId,
+      name: specForm.name.trim(),
+      priceAdjustment: specForm.priceAdjustment ? parseFloat(specForm.priceAdjustment) : 0,
+      sortOrder: specForm.sortOrder ? parseInt(specForm.sortOrder) : 0,
+      isDefault: specForm.isDefault
+    };
+
+    let url, method;
+    if (editingSpecId) {
+      url = `/menu/specifications/${editingSpecId}`;
+      method = 'PUT';
+    } else {
+      url = '/menu/specifications';
+      method = 'POST';
+    }
+
+    app.apiRequest({
+      url: url,
+      method: method,
+      data: requestData
+    }).then(response => {
+      this.setData({ specSubmitting: false });
+      if (response.code === 200) {
+        wx.showToast({
+          title: editingSpecId ? '更新成功' : '添加成功',
+          icon: 'success'
+        });
+        this.setData({ showSpecModal: false });
+        // 刷新规格列表
+        this.loadSpecifications();
+      } else {
+        wx.showToast({
+          title: response.message || '操作失败',
+          icon: 'none'
+        });
+      }
+    }).catch(error => {
+      this.setData({ specSubmitting: false });
+      console.error('保存规格失败:', error);
+      wx.showToast({
+        title: '操作失败',
+        icon: 'none'
+      });
+    });
   },
 
   /**
@@ -293,13 +517,8 @@ Page({
         name: name.trim(),
         categoryId: categoryId,
         price: parseFloat(price),
-        originalPrice: this.data.originalPrice ? parseFloat(this.data.originalPrice) : null,
-        description: this.data.description.trim(),
+        description: this.data.description ? this.data.description.trim() : '',
         imageUrl: imageUrl,
-        stock: this.data.stock ? parseInt(this.data.stock) : -1,
-        isRecommended: this.data.isRecommended,
-        isHot: this.data.isHot,
-        sortOrder: this.data.sortOrder || 0,
         isActive: this.data.isActive
       };
 

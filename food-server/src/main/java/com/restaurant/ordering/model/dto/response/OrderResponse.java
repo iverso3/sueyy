@@ -32,5 +32,9 @@ public class OrderResponse {
         private BigDecimal price;
         private Integer quantity;
         private BigDecimal subtotal;
+        // 评价相关
+        private Boolean hasReviewed;
+        private Integer rating;
+        private String comment;
     }
 }

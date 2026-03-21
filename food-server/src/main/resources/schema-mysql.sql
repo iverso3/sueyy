@@ -166,3 +166,25 @@ CREATE INDEX idx_order_id ON order_items(order_id);
 -- 添加购物车项图片URL字段 (2026-03-16)
 ALTER TABLE cart_items ADD COLUMN image_url VARCHAR(500);
 CREATE INDEX idx_menu_item_id_oi ON order_items(menu_item_id);
+
+-- 菜品评价表
+CREATE TABLE IF NOT EXISTS dish_reviews (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    order_item_id BIGINT NOT NULL,
+    user_id BIGINT NOT NULL,
+    menu_item_id BIGINT NOT NULL,
+    rating TINYINT NOT NULL,
+    comment TEXT,
+    images JSON,
+    is_anonymous BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (order_item_id) REFERENCES order_items(id),
+    FOREIGN KEY (user_id) REFERENCES users(id),
+    FOREIGN KEY (menu_item_id) REFERENCES menu_items(id),
+    CONSTRAINT uk_order_item_id UNIQUE (order_item_id)
+);
+
+CREATE INDEX idx_menu_item_id_dr ON dish_reviews(menu_item_id);
+CREATE INDEX idx_user_id_dr ON dish_reviews(user_id);
+CREATE INDEX idx_rating_dr ON dish_reviews(rating);

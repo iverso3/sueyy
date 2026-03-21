@@ -29,6 +29,7 @@ public class OrderServiceImpl implements OrderService {
     private final CartRepository cartRepository;
     private final CartItemRepository cartItemRepository;
     private final UserRepository userRepository;
+    private final DishReviewRepository dishReviewRepository;
 
     @Override
     @Transactional
@@ -74,8 +75,8 @@ public class OrderServiceImpl implements OrderService {
         order.setStatus(com.restaurant.ordering.model.enums.OrderStatus.PLACED);
         order.setPaymentMethod(com.restaurant.ordering.model.enums.PaymentMethod.WECHAT);
         order.setPaymentStatus(com.restaurant.ordering.model.enums.PaymentStatus.UNPAID);
-        // 处理配送时间
-        LocalDateTime pickupTime = parseDeliveryTime(request.getDeliveryTime());
+        // 处理取餐时间
+        LocalDateTime pickupTime = parseDeliveryTime(request.getPickupTime());
         order.setPickupTime(pickupTime);
         order.setRemark(request.getRemark());
 
@@ -235,22 +236,25 @@ public class OrderServiceImpl implements OrderService {
     }
 
     /**
-     * 解析配送时间
+     * 解析取餐时间
      */
-    private LocalDateTime parseDeliveryTime(String deliveryTime) {
-        if (deliveryTime == null || deliveryTime.isEmpty()) {
+    private LocalDateTime parseDeliveryTime(String pickupTime) {
+        if (pickupTime == null || pickupTime.isEmpty()) {
             return LocalDateTime.now().plusMinutes(30);
         }
 
-        if ("尽快送达".equals(deliveryTime)) {
-            return LocalDateTime.now().plusMinutes(30);
-        } else if ("30分钟内".equals(deliveryTime)) {
-            return LocalDateTime.now().plusMinutes(30);
-        } else if ("1小时内".equals(deliveryTime)) {
-            return LocalDateTime.now().plusHours(1);
+        try {
+            // 尝试解析 yyyy-MM-dd HH:mm:ss 格式
+            return LocalDateTime.parse(pickupTime, java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        } catch (Exception e) {
+            log.warn("解析取餐时间失败: {}, 使用默认时间", pickupTime);
+            // 如果解析失败，尝试其他常见格式
+            try {
+                return LocalDateTime.parse(pickupTime);
+            } catch (Exception e2) {
+                return LocalDateTime.now().plusMinutes(30);
+            }
         }
-        // 默认30分钟
-        return LocalDateTime.now().plusMinutes(30);
     }
 
     /**
@@ -320,6 +324,14 @@ public class OrderServiceImpl implements OrderService {
         response.setPrice(orderItem.getMenuItemPrice());
         response.setQuantity(orderItem.getQuantity());
         response.setSubtotal(orderItem.getSubtotal());
+
+        // 获取评价信息
+        dishReviewRepository.findByOrderItemId(orderItem.getId()).ifPresent(review -> {
+            response.setHasReviewed(true);
+            response.setRating(review.getRating());
+            response.setComment(review.getComment());
+        });
+
         return response;
     }
 }

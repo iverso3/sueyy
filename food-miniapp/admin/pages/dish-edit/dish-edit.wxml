@@ -1,22 +1,6 @@
 <!--pages/dish-edit/dish-edit.wxml-->
 <view class="container">
   <form class="form" bindsubmit="onSubmit">
-    <!-- 菜品图片 -->
-    <view class="form-section">
-      <view class="section-title">菜品图片</view>
-      <view class="image-upload" bindtap="onChooseImage">
-        <image wx:if="{{tempFilePath || imageUrl}}" src="{{tempFilePath || imageUrl}}" mode="aspectFill" class="preview-image" />
-        <view wx:else class="upload-placeholder">
-          <text class="icon">+</text>
-          <text>点击上传图片</text>
-        </view>
-      </view>
-      <view class="image-actions" wx:if="{{tempFilePath || imageUrl}}">
-        <view class="image-action-btn" bindtap="previewImage">预览</view>
-        <view class="image-action-btn remove" bindtap="removeImage">删除</view>
-      </view>
-    </view>
-
     <!-- 菜品名称 -->
     <view class="form-section">
       <view class="section-title">菜品名称 <text class="required">*</text></view>
@@ -43,46 +27,41 @@
       </view>
     </view>
 
-    <!-- 原价 -->
-    <view class="form-section">
-      <view class="section-title">原价（用于显示折扣）</view>
-      <view class="price-input-wrap">
-        <text class="currency">¥</text>
-        <input class="input price-input" type="digit" placeholder="0.00" value="{{originalPrice}}" data-field="originalPrice" bindinput="onInput" />
-      </view>
-    </view>
-
-    <!-- 库存 -->
-    <view class="form-section">
-      <view class="section-title">库存（-1表示无限）</view>
-      <input class="input" type="number" placeholder="-1表示无限库存" value="{{stock}}" data-field="stock" bindinput="onInput" />
-    </view>
-
     <!-- 菜品描述 -->
     <view class="form-section">
       <view class="section-title">菜品描述</view>
       <textarea class="textarea" placeholder="请输入菜品描述" value="{{description}}" data-field="description" bindinput="onInput" maxlength="1000" auto-height />
     </view>
 
-    <!-- 排序 -->
-    <view class="form-section">
-      <view class="section-title">排序（越小越靠前）</view>
-      <input class="input" type="number" placeholder="0" value="{{sortOrder}}" data-field="sortOrder" bindinput="onInput" />
-    </view>
-
-    <!-- 开关选项 -->
+    <!-- 是否在售 -->
     <view class="form-section switches">
-      <view class="switch-item">
-        <text class="switch-label">是否推荐</text>
-        <switch checked="{{isRecommended}}" data-field="isRecommended" bindchange="onSwitchChange" color="#4caf50" />
-      </view>
-      <view class="switch-item">
-        <text class="switch-label">是否热销</text>
-        <switch checked="{{isHot}}" data-field="isHot" bindchange="onSwitchChange" color="#4caf50" />
-      </view>
       <view class="switch-item">
         <text class="switch-label">是否在售</text>
         <switch checked="{{isActive}}" data-field="isActive" bindchange="onSwitchChange" color="#4caf50" />
+      </view>
+    </view>
+
+    <!-- 规格管理（仅编辑模式显示） -->
+    <view wx:if="{{type === 'edit' && dishId}}" class="form-section">
+      <view class="section-title">菜品规格</view>
+      <view class="spec-list">
+        <view wx:for="{{specifications}}" wx:key="id" class="spec-item">
+          <view class="spec-info">
+            <text class="spec-name">{{item.name}}</text>
+            <text class="spec-price" wx:if="{{item.priceAdjustment > 0}}">+¥{{item.priceAdjustment}}</text>
+            <text class="spec-default" wx:if="{{item.isDefault}}">默认</text>
+          </view>
+          <view class="spec-actions">
+            <view class="spec-action-btn" bindtap="editSpecification" data-id="{{item.id}}">编辑</view>
+            <view class="spec-action-btn delete" bindtap="deleteSpecification" data-id="{{item.id}}">删除</view>
+          </view>
+        </view>
+        <view wx:if="{{specifications.length === 0}}" class="spec-empty">
+          暂无规格，请添加
+        </view>
+      </view>
+      <view class="add-spec-btn" bindtap="showSpecModal">
+        <text>+ 添加规格</text>
       </view>
     </view>
 
@@ -93,4 +72,42 @@
       </button>
     </view>
   </form>
+
+  <!-- 规格弹窗 -->
+  <view wx:if="{{showSpecModal}}" class="modal-mask" bindtap="hideSpecModal">
+    <view class="modal-content" catchtap="preventBubble">
+      <view class="modal-header">
+        <text class="modal-title">{{editingSpecId ? '编辑规格' : '添加规格'}}</text>
+        <text class="modal-close" bindtap="hideSpecModal">×</text>
+      </view>
+      <view class="modal-body">
+        <view class="form-section">
+          <view class="section-title">规格名称 <text class="required">*</text></view>
+          <input class="input" placeholder="如：大份、小份、微辣" value="{{specForm.name}}" data-field="name" bindinput="onSpecInput" maxlength="50" />
+        </view>
+        <view class="form-section">
+          <view class="section-title">价格调整（元）</view>
+          <view class="price-input-wrap">
+            <text class="currency">+¥</text>
+            <input class="input price-input" type="digit" placeholder="0.00" value="{{specForm.priceAdjustment}}" data-field="priceAdjustment" bindinput="onSpecInput" />
+          </view>
+          <view class="field-hint">相对于基础价格的加价，0表示不涨价</view>
+        </view>
+        <view class="form-section">
+          <view class="section-title">排序</view>
+          <input class="input" type="number" placeholder="0" value="{{specForm.sortOrder}}" data-field="sortOrder" bindinput="onSpecInput" />
+        </view>
+        <view class="form-section switches">
+          <view class="switch-item">
+            <text class="switch-label">设为默认规格</text>
+            <switch checked="{{specForm.isDefault}}" data-field="isDefault" bindchange="onSpecSwitchChange" color="#4caf50" />
+          </view>
+        </view>
+      </view>
+      <view class="modal-footer">
+        <button class="modal-cancel-btn" bindtap="hideSpecModal">取消</button>
+        <button class="modal-confirm-btn" bindtap="saveSpecification" loading="{{specSubmitting}}">保存</button>
+      </view>
+    </view>
+  </view>
 </view>

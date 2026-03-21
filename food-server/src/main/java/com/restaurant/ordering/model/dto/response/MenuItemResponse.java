@@ -3,6 +3,7 @@ package com.restaurant.ordering.model.dto.response;
 import lombok.Data;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Data
 public class MenuItemResponse {
@@ -19,4 +20,5 @@ public class MenuItemResponse {
     private Boolean isActive;
     private Long categoryId;
     private String categoryName;
+    private List<DishSpecificationResponse> specifications;
 }

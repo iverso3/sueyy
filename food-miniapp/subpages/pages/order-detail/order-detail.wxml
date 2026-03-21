@@ -54,6 +54,11 @@
             <text class="price">¥{{item.price}} × {{item.quantity}}</text>
             <text class="subtotal">¥{{item.subtotal}}</text>
           </view>
+          <!-- 评价显示（订单完成后） -->
+          <view wx:if="{{order.status === 'COMPLETED' && item.hasReviewed}}" class="item-review">
+            <text class="review-stars">{{item.rating}}星</text>
+            <text wx:if="{{item.comment}}" class="review-comment">{{item.comment}}</text>
+          </view>
         </view>
       </view>
     </view>
@@ -90,12 +95,66 @@
 
   <!-- 底部操作栏 -->
   <view wx:if="{{!loading && order}}" class="bottom-bar">
+    <!-- 评价按钮（订单完成后显示，且未全部评价） -->
+    <view wx:if="{{order.status === 'COMPLETED' && !hasAllReviewed}}" class="review-order-btn" bindtap="openReviewPanel">
+      <text>评价菜品</text>
+    </view>
     <!-- 删除订单按钮 -->
     <view wx:if="{{canEdit}}" class="delete-order-btn" bindtap="deleteOrder">
       <text>删除订单</text>
     </view>
     <view class="home-btn" bindtap="goToHome">
       <text>返回首页</text>
+    </view>
+  </view>
+</view>
+
+<!-- 评价弹窗 -->
+<view wx:if="{{showReviewPanel}}" class="review-mask" bindtap="closeReviewPanel">
+  <view class="review-container" catchtap="preventBubble">
+    <view class="review-header">
+      <text class="review-title">评价菜品</text>
+      <text class="review-close" bindtap="closeReviewPanel">×</text>
+    </view>
+
+    <view class="review-items">
+      <view wx:for="{{order.items}}" wx:key="id" class="review-item">
+        <image class="review-item-image" src="{{item.imageUrl}}" mode="aspectFill" />
+        <view class="review-item-info">
+          <text class="review-item-name">{{item.menuItemName}}</text>
+          <!-- 评分组件 -->
+          <view class="rating-row">
+            <view class="rating-stars">
+              <view
+                wx:for="{{[1,2,3,4,5]}}"
+                wx:for-item="star"
+                wx:key="star"
+                class="star {{star <= (item.rating || 0) ? 'active' : ''}}"
+                bindtap="setRating"
+                data-index="{{index}}"
+                data-itemid="{{item.id}}"
+              >
+                ★
+              </view>
+            </view>
+            <text class="rating-text">{{item.rating || 0}}星</text>
+          </view>
+          <!-- 评价输入 -->
+          <input
+            class="review-input"
+            placeholder="分享您的用餐体验..."
+            bindinput="onReviewInput"
+            data-itemid="{{item.id}}"
+            value="{{item.comment || ''}}"
+          />
+        </view>
+      </view>
+    </view>
+
+    <view class="review-footer">
+      <view class="submit-review-btn" bindtap="submitReview">
+        <text>提交评价</text>
+      </view>
     </view>
   </view>
 </view>

@@ -19,4 +19,10 @@ public interface DishReviewRepository extends JpaRepository<DishReview, Long> {
     boolean existsByOrderItemId(Long orderItemId);
 
     long countByMenuItem(MenuItem menuItem);
+
+    java.util.Optional<DishReview> findByOrderItemId(Long orderItemId);
+
+    List<DishReview> findByMenuItemIdOrderByCreatedAtDesc(Long menuItemId);
+
+    List<DishReview> findAllByOrderByCreatedAtDesc();
 }

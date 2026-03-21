@@ -8,7 +8,151 @@ Page({
     order: null,
     loading: true,
     isAdmin: false,
-    canDelete: false
+    canDelete: false,
+    hasAllReviewed: false,
+    // 评价相关
+    showReviewPanel: false,
+    reviewData: {}
+  },
+
+  /**
+   * 打开评价面板
+   */
+  openReviewPanel() {
+    const reviewData = {};
+    // 初始化每个菜品的评价数据
+    this.data.order.items.forEach(item => {
+      reviewData[item.id] = {
+        rating: 5,
+        comment: ''
+      };
+    });
+    this.setData({
+      showReviewPanel: true,
+      reviewData: reviewData
+    });
+  },
+
+  /**
+   * 关闭评价面板
+   */
+  closeReviewPanel() {
+    this.setData({
+      showReviewPanel: false
+    });
+  },
+
+  /**
+   * 设置评分
+   */
+  setRating(e) {
+    const itemId = e.currentTarget.dataset.itemid;
+    const rating = e.currentTarget.dataset.index + 1;
+
+    const reviewData = this.data.reviewData;
+    reviewData[itemId].rating = rating;
+
+    // 更新对应item的显示
+    const items = this.data.order.items.map(item => {
+      if (item.id === itemId) {
+        return { ...item, rating: rating };
+      }
+      return item;
+    });
+
+    this.setData({
+      reviewData: reviewData,
+      'order.items': items
+    });
+  },
+
+  /**
+   * 输入评价
+   */
+  onReviewInput(e) {
+    const itemId = e.currentTarget.dataset.itemid;
+    const comment = e.detail.value;
+
+    const reviewData = this.data.reviewData;
+    reviewData[itemId].comment = comment;
+
+    // 更新对应item的显示
+    const items = this.data.order.items.map(item => {
+      if (item.id === itemId) {
+        return { ...item, comment: comment };
+      }
+      return item;
+    });
+
+    this.setData({
+      reviewData: reviewData,
+      'order.items': items
+    });
+  },
+
+  /**
+   * 防止冒泡
+   */
+  preventBubble() {
+    // 空方法
+  },
+
+  /**
+   * 提交评价
+   */
+  submitReview() {
+    const app = getApp();
+    const reviewData = this.data.reviewData;
+    const items = this.data.order.items;
+
+    // 检查是否所有菜品都评价了
+    let hasUnrated = false;
+    items.forEach(item => {
+      if (!reviewData[item.id] || !reviewData[item.id].rating) {
+        hasUnrated = true;
+      }
+    });
+
+    if (hasUnrated) {
+      wx.showToast({
+        title: '请为每道菜评分',
+        icon: 'none'
+      });
+      return;
+    }
+
+    wx.showLoading({ title: '提交中...' });
+
+    // 逐个提交评价
+    const promises = items.map(item => {
+      return app.apiRequest({
+        url: '/reviews',
+        method: 'POST',
+        data: {
+          orderItemId: item.id,
+          rating: reviewData[item.id].rating,
+          comment: reviewData[item.id].comment || ''
+        }
+      });
+    });
+
+    Promise.all(promises).then(results => {
+      wx.hideLoading();
+      wx.showToast({
+        title: '评价成功',
+        icon: 'success'
+      });
+      this.setData({
+        showReviewPanel: false
+      });
+    }).catch(error => {
+      wx.hideLoading();
+      console.error('评价失败:', error);
+      wx.showToast({
+        title: '评价失败，请重试',
+        icon: 'none'
+      });
+    });
   },
 
   /**
@@ -60,12 +204,19 @@ Page({
         // 普通用户：当天订单且未完成才能编辑；管理员：始终可以编辑
         const canEdit = isAdmin || (!isCompleted && canDelete && isOwnOrder);
 
+        // 检查是否所有菜品都已评价
+        let hasAllReviewed = false;
+        if (order.items && order.items.length > 0) {
+          hasAllReviewed = order.items.every(item => item.hasReviewed);
+        }
+
         this.setData({
           order: order,
           isAdmin: isAdmin,
           canDelete: canEdit,
           canEdit: canEdit,
           isOwnOrder: isOwnOrder,
+          hasAllReviewed: hasAllReviewed,
           loading: false
         });
       }

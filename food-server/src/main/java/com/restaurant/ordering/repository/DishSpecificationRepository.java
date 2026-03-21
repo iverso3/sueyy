@@ -13,4 +13,6 @@ public interface DishSpecificationRepository extends JpaRepository<DishSpecifica
     List<DishSpecification> findByMenuItemOrderBySortOrderAsc(MenuItem menuItem);
 
     List<DishSpecification> findByMenuItemAndIsDefaultTrue(MenuItem menuItem);
+
+    List<DishSpecification> findByMenuItemIdOrderBySortOrderAsc(Long menuItemId);
 }

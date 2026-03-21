@@ -8,6 +8,7 @@ import com.restaurant.ordering.model.entity.*;
 import com.restaurant.ordering.model.dto.response.CartResponse.CartItemResponse;
 import com.restaurant.ordering.repository.CartItemRepository;
 import com.restaurant.ordering.repository.CartRepository;
+import com.restaurant.ordering.repository.DishSpecificationRepository;
 import com.restaurant.ordering.repository.MenuItemRepository;
 import com.restaurant.ordering.repository.UserRepository;
 import com.restaurant.ordering.service.CartService;
@@ -30,6 +31,7 @@ public class CartServiceImpl implements CartService {
     private final CartItemRepository cartItemRepository;
     private final MenuItemRepository menuItemRepository;
     private final UserRepository userRepository;
+    private final DishSpecificationRepository dishSpecificationRepository;
 
     @Override
     @Transactional(readOnly = true)
@@ -80,8 +82,28 @@ public class CartServiceImpl implements CartService {
             throw new BusinessException(ErrorCode.MENU_ITEM_NOT_FOUND);
         }
 
-        // 检查商品是否已存在购物车中
-        Optional<CartItem> existingItemOpt = cartItemRepository.findByCartAndMenuItem(cart, menuItem);
+        // 处理规格
+        final Long specificationId;
+        DishSpecification specification = null;
+        if (request.getSpecificationId() != null) {
+            specification = dishSpecificationRepository.findById(request.getSpecificationId())
+                    .orElse(null);
+            // 确保规格属于该菜品
+            if (specification != null && !specification.getMenuItem().getId().equals(menuItem.getId())) {
+                specification = null;
+            }
+        }
+        specificationId = specification != null ? specification.getId() : null;
+
+        // 检查商品是否已存在购物车中（同时考虑规格）
+        Optional<CartItem> existingItemOpt = cartItemRepository.findByCartAndMenuItem(cart, menuItem)
+                .filter(item -> {
+                    if (specificationId == null) {
+                        return item.getSpecification() == null;
+                    } else {
+                        return specificationId.equals(item.getSpecification() != null ? item.getSpecification().getId() : null);
+                    }
+                });
 
         if (existingItemOpt.isPresent()) {
             // 已存在，更新数量
@@ -90,7 +112,7 @@ public class CartServiceImpl implements CartService {
             return updateCartItemQuantityAndReturn(existingItem, newQuantity, cart);
         } else {
             // 新商品，添加到购物车
-            CartItem savedItem = createNewCartItem(cart, menuItem, request.getQuantity());
+            CartItem savedItem = createNewCartItem(cart, menuItem, specification, request.getQuantity());
             return convertToCartItemResponse(savedItem);
         }
     }
@@ -189,13 +211,20 @@ public class CartServiceImpl implements CartService {
     /**
      * 创建新的购物车商品
      */
-    private CartItem createNewCartItem(Cart cart, MenuItem menuItem, Integer quantity) {
+    private CartItem createNewCartItem(Cart cart, MenuItem menuItem, DishSpecification specification, Integer quantity) {
         CartItem cartItem = new CartItem();
         cartItem.setCart(cart);
         cartItem.setMenuItem(menuItem);
+        cartItem.setSpecification(specification);
         cartItem.setQuantity(quantity);
-        cartItem.setPrice(menuItem.getPrice());
-        cartItem.setSubtotal(menuItem.getPrice().multiply(BigDecimal.valueOf(quantity)));
+
+        // 计算价格：基础价格 + 规格加价
+        BigDecimal basePrice = menuItem.getPrice();
+        if (specification != null && specification.getPriceAdjustment() != null) {
+            basePrice = basePrice.add(specification.getPriceAdjustment());
+        }
+        cartItem.setPrice(basePrice);
+        cartItem.setSubtotal(basePrice.multiply(BigDecimal.valueOf(quantity)));
         cartItem.setImageUrl(menuItem.getImageUrl());
 
         CartItem savedItem = cartItemRepository.save(cartItem);

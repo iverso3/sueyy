@@ -6,7 +6,41 @@ Page({
    */
   data: {
     isLoading: false,
-    errorMsg: ''
+    errorMsg: '',
+    isAgreed: false  // 用户是否同意协议
+  },
+
+  /**
+   * 切换协议勾选状态
+   */
+  toggleAgreement() {
+    this.setData({
+      isAgreed: !this.data.isAgreed
+    });
+  },
+
+  /**
+   * 显示用户协议
+   */
+  showUserAgreement() {
+    wx.showModal({
+      title: '用户协议',
+      content: '这里是用户协议的内容...',
+      showCancel: false,
+      confirmText: '我知道了'
+    });
+  },
+
+  /**
+   * 显示隐私政策
+   */
+  showPrivacyPolicy() {
+    wx.showModal({
+      title: '隐私政策',
+      content: '这里是隐私政策的内容...',
+      showCancel: false,
+      confirmText: '我知道了'
+    });
   },
 
   /**
