@@ -19,16 +19,27 @@ Page({
       // 已登录且token有效，跳转到目标页面或菜单页
       const redirectUrl = app.globalData.loginRedirectUrl;
       app.globalData.loginRedirectUrl = null; // 清除
-      if (redirectUrl) {
-        wx.redirectTo({ url: redirectUrl });
-      } else {
-        wx.switchTab({
-          url: '/pages/menu/menu'
-        });
-      }
+      this.navigateToTarget(redirectUrl);
       return;
     }
     // 否则显示登录页面
+  },
+
+  /**
+   * 跳转到目标页面（处理 tab 页和非 tab 页）
+   */
+  navigateToTarget(redirectUrl) {
+    if (!redirectUrl) {
+      wx.switchTab({ url: '/pages/menu/menu' });
+      return;
+    }
+    // tab 页面用 switchTab，非 tab 页面用 redirectTo
+    const tabPages = ['/pages/menu/menu', '/pages/order/order', '/pages/profile/profile'];
+    if (tabPages.some(page => redirectUrl.indexOf(page) !== -1)) {
+      wx.switchTab({ url: redirectUrl });
+    } else {
+      wx.redirectTo({ url: redirectUrl });
+    }
   },
 
   /**
@@ -65,13 +76,7 @@ Page({
       setTimeout(() => {
         const redirectUrl = app.globalData.loginRedirectUrl;
         app.globalData.loginRedirectUrl = null;
-        if (redirectUrl) {
-          wx.redirectTo({ url: redirectUrl });
-        } else {
-          wx.switchTab({
-            url: '/pages/menu/menu'
-          });
-        }
+        this.navigateToTarget(redirectUrl);
       }, 1500);
 
     }).catch(err => {
@@ -132,13 +137,7 @@ Page({
     setTimeout(() => {
       const redirectUrl = app.globalData.loginRedirectUrl;
       app.globalData.loginRedirectUrl = null;
-      if (redirectUrl) {
-        wx.redirectTo({ url: redirectUrl });
-      } else {
-        wx.switchTab({
-          url: '/pages/menu/menu'
-        });
-      }
+      this.navigateToTarget(redirectUrl);
     }, 1500);
   },
 
