@@ -16,6 +16,33 @@ App({
   onLaunch() {
     console.log('小程序启动');
 
+    // 全局拦截 wx.switchTab，在当前页面弹出登录提示
+    const originalSwitchTab = wx.switchTab;
+    const app = this;
+    wx.switchTab = function(options) {
+      const url = options.url;
+      // 需要登录的 tab 页面
+      const needLogin = url.indexOf('/pages/order/order') !== -1 ||
+                       url.indexOf('/pages/profile/profile') !== -1;
+      if (needLogin && !app.isLoggedIn()) {
+        const isOrder = url.indexOf('/pages/order/order') !== -1;
+        wx.showModal({
+          title: '提示',
+          content: isOrder ? '我的订单需要登录才可以查看，是否登录？' : '我的信息需要登录才可以查看，是否登录？',
+          confirmText: '去登录',
+          cancelText: '取消',
+          success: (res) => {
+            if (res.confirm) {
+              originalSwitchTab.call(wx, { url: url });
+            }
+            // cancel 时什么都不做，留在当前页面
+          }
+        });
+      } else {
+        originalSwitchTab.call(wx, options);
+      }
+    };
+
     // 从本地存储获取token
     try {
       const token = wx.getStorageSync('token');

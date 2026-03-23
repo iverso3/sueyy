@@ -6,7 +6,6 @@ Page({
    */
   data: {
     nickname: '',
-    phone: '',
     avatarUrl: ''
   },
 
@@ -26,7 +25,6 @@ Page({
 
     this.setData({
       nickname: userInfo.nickname || '',
-      phone: userInfo.phone || '',
       avatarUrl: userInfo.avatarUrl || ''
     });
   },
@@ -37,15 +35,6 @@ Page({
   onNicknameInput(e) {
     this.setData({
       nickname: e.detail.value
-    });
-  },
-
-  /**
-   * 手机号输入
-   */
-  onPhoneInput(e) {
-    this.setData({
-      phone: e.detail.value
     });
   },
 
@@ -64,8 +53,8 @@ Page({
    */
   onSave() {
     console.log('onSave called');
-    const { nickname, phone, avatarUrl } = this.data;
-    console.log('data:', { nickname, phone, avatarUrl });
+    const { nickname, avatarUrl } = this.data;
+    console.log('data:', { nickname, avatarUrl });
 
     if (!nickname || nickname.trim() === '') {
       wx.showToast({
@@ -90,7 +79,7 @@ Page({
           try {
             const response = JSON.parse(res.data);
             if (response.code === 200) {
-              this.doSave({ nickname: nickname.trim(), phone, avatarUrl: response.data.fileUrl });
+              this.doSave({ nickname: nickname.trim(), avatarUrl: response.data.fileUrl });
             } else {
               wx.showToast({ title: '头像上传失败', icon: 'none' });
             }
@@ -103,7 +92,7 @@ Page({
         }
       });
     } else {
-      this.doSave({ nickname: nickname.trim(), phone, avatarUrl });
+      this.doSave({ nickname: nickname.trim(), avatarUrl });
     }
   },
 

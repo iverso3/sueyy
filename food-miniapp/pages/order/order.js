@@ -15,15 +15,10 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad(options) {
-    // 加载订单列表
     this.loadOrders();
   },
 
-  /**
-   * 生命周期函数--监听页面显示
-   */
   onShow() {
-    // 每次页面显示时刷新订单列表
     this.loadOrders();
   },
 

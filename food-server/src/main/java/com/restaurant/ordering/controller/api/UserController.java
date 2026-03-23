@@ -53,9 +53,6 @@ public class UserController {
                     if (params.containsKey("avatarUrl")) {
                         user.setAvatarUrl(params.get("avatarUrl"));
                     }
-                    if (params.containsKey("phone")) {
-                        user.setPhone(params.get("phone"));
-                    }
 
                     User saved = userRepository.save(user);
                     log.info("用户资料更新成功: userId={}", userId);

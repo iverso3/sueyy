@@ -137,6 +137,25 @@ Page({
    */
   addToCartWithSpec(menuItemId, specificationId) {
     const app = getApp();
+
+    // 未登录时提示登录
+    if (!app.isLoggedIn()) {
+      wx.showModal({
+        title: '提示',
+        content: '加入想吃需要先登录，是否去登录？',
+        confirmText: '去登录',
+        cancelText: '继续浏览',
+        success: (res) => {
+          if (res.confirm) {
+            wx.redirectTo({
+              url: '/subpages/pages/login/login'
+            });
+          }
+        }
+      });
+      return;
+    }
+
     const data = {
       menuItemId: menuItemId,
       quantity: 1
@@ -178,16 +197,11 @@ Page({
    * 生命周期函数--监听页面显示
    */
   onShow() {
-    // 检查登录状态
+    // 页面显示时刷新想吃数量（不强制登录，用户可先浏览菜单）
     const app = getApp();
-    if (!app.isLoggedIn()) {
-      // token无效或过期，跳转到登录页
-      app.redirectToLogin();
-      return;
+    if (app.isLoggedIn()) {
+      this.getWantCount();
     }
-
-    // 页面显示时刷新想吃数量
-    this.getWantCount();
   },
 
   /**
