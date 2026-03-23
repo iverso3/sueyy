@@ -16,10 +16,17 @@ Page({
     // 检查是否已登录且token有效
     const app = getApp();
     if (app.isLoggedIn()) {
-      // 已登录且token有效，跳转到菜单页
-      wx.switchTab({
-        url: '/pages/menu/menu'
-      });
+      // 已登录且token有效，跳转到目标页面或菜单页
+      const redirectUrl = app.globalData.loginRedirectUrl;
+      app.globalData.loginRedirectUrl = null; // 清除
+      if (redirectUrl) {
+        wx.redirectTo({ url: redirectUrl });
+      } else {
+        wx.switchTab({
+          url: '/pages/menu/menu'
+        });
+      }
+      return;
     }
     // 否则显示登录页面
   },
@@ -56,9 +63,15 @@ Page({
       });
 
       setTimeout(() => {
-        wx.switchTab({
-          url: '/pages/menu/menu'
-        });
+        const redirectUrl = app.globalData.loginRedirectUrl;
+        app.globalData.loginRedirectUrl = null;
+        if (redirectUrl) {
+          wx.redirectTo({ url: redirectUrl });
+        } else {
+          wx.switchTab({
+            url: '/pages/menu/menu'
+          });
+        }
       }, 1500);
 
     }).catch(err => {
@@ -117,9 +130,15 @@ Page({
     });
 
     setTimeout(() => {
-      wx.switchTab({
-        url: '/pages/menu/menu'
-      });
+      const redirectUrl = app.globalData.loginRedirectUrl;
+      app.globalData.loginRedirectUrl = null;
+      if (redirectUrl) {
+        wx.redirectTo({ url: redirectUrl });
+      } else {
+        wx.switchTab({
+          url: '/pages/menu/menu'
+        });
+      }
     }, 1500);
   },
 

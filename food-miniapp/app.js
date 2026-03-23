@@ -33,7 +33,12 @@ App({
           cancelText: '取消',
           success: (res) => {
             if (res.confirm) {
-              originalSwitchTab.call(wx, { url: url });
+              // 保存目标页面，登录成功后跳转
+              app.globalData.loginRedirectUrl = url;
+              // 跳转到登录页面
+              wx.redirectTo({
+                url: '/subpages/pages/login/login'
+              });
             }
             // cancel 时什么都不做，留在当前页面
           }
