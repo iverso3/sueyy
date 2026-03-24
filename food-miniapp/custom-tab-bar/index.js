@@ -78,15 +78,37 @@ Component({
     watchRouteChange() {
       const originalSwitchTab = wx.switchTab;
       const self = this;
+      const app = getApp();
 
       wx.switchTab = function(options) {
-        console.log('switchTab to:', options.url);
-        // 先调用原始方法
-        originalSwitchTab.apply(this, arguments);
-        // 延迟更新tab高亮，确保页面已切换
-        setTimeout(() => {
-          self.updateCurrentTab();
-        }, 100);
+        const url = options.url;
+        const needLogin = url.indexOf('/pages/order/order') !== -1 ||
+                         url.indexOf('/pages/profile/profile') !== -1;
+        // 需要登录但未登录，显示登录提示
+        if (needLogin && !app.isLoggedIn()) {
+          const isOrder = url.indexOf('/pages/order/order') !== -1;
+          wx.showModal({
+            title: '提示',
+            content: isOrder ? '我的订单需要登录才可以查看，是否登录？' : '我的信息需要登录才可以查看，是否登录？',
+            confirmText: '去登录',
+            cancelText: '取消',
+            success: (res) => {
+              if (res.confirm) {
+                app.globalData.loginRedirectUrl = url;
+                wx.redirectTo({
+                  url: '/subpages/pages/login/login'
+                });
+              }
+            }
+          });
+        } else {
+          // 已登录或不需要登录，调用原始 switchTab
+          originalSwitchTab.call(wx, options);
+          // 延迟更新tab高亮，确保页面已切换
+          setTimeout(() => {
+            self.updateCurrentTab();
+          }, 100);
+        }
       };
     },
 
